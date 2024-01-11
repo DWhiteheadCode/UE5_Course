@@ -9,6 +9,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/InputComponent.h"
 #include "DrawDebugHelpers.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 
 // Sets default values
@@ -22,6 +23,12 @@ ACCharacter::ACCharacter()
 
 	this->SpringArmComp->SetupAttachment(RootComponent);
 	this->CameraComp->SetupAttachment(SpringArmComp);
+
+	this->SpringArmComp->bUsePawnControlRotation = false;
+
+	bUseControllerRotationYaw = false;
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+
 }
 
 
@@ -30,12 +37,18 @@ void ACCharacter::Move(const FInputActionValue& Value)
 {
 	const FVector2D MoveValue = Value.Get<FVector2D>();
 
+
 	if (GetController())
 	{
-		FVector Forward = GetActorForwardVector();
+		// Get the Yaw (left/right) component from the camera
+		FRotator ControlRotator = GetControlRotation();
+		ControlRotator.Pitch = 0.f;
+		ControlRotator.Roll = 0.f;
+
+		FVector Forward = ControlRotator.Vector();
 		AddMovementInput(Forward, MoveValue.X);
 
-		FVector Right = GetActorRightVector();
+		FVector Right = FRotationMatrix(ControlRotator).GetScaledAxis(EAxis::Y); // Get the Y (right) vector from the ControlRotator
 		AddMovementInput(Right, MoveValue.Y);
 	}
 }
