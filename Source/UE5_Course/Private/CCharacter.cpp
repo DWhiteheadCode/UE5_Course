@@ -64,6 +64,14 @@ void ACCharacter::Look(const FInputActionValue& Value)
 	}	
 }
 
+void ACCharacter::Jump()
+{
+	if (CanJump())
+	{
+		Super::Jump();
+	}
+}
+
 void ACCharacter::ShootPrimaryProjectile()
 {
 	FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
@@ -132,6 +140,7 @@ void ACCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ACCharacter::Move);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ACCharacter::Look);
 		EnhancedInputComponent->BindAction(PrimaryProjectileAction, ETriggerEvent::Started, this, &ACCharacter::ShootPrimaryProjectile);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACCharacter::Jump);
 	}
 }
 

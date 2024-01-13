@@ -43,6 +43,12 @@ protected:
 
 	void Move(const FInputActionValue& Value);
 
+	// Jump
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UInputAction* JumpAction;
+
+	void Jump();
+
 
 	// Look
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
