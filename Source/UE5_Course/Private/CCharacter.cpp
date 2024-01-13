@@ -64,6 +64,25 @@ void ACCharacter::Look(const FInputActionValue& Value)
 	}	
 }
 
+void ACCharacter::ShootPrimaryProjectile()
+{
+	FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
+
+	// Spawn transformation matrix
+	// Spawn the projectile at the character's hand, moving towards the camera's rotation
+	FTransform SpawnTM = FTransform( GetControlRotation(), HandLocation );
+
+	// Struct containing a number of spawn properties
+	// Spawn the Actor, regardless of whether or not it is colliding with something else
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	GetWorld()->SpawnActor<AActor>( ProjectileClass, SpawnTM, SpawnParams );
+}
+
+
+
+
 
 
 // Called when the game starts or when spawned
@@ -112,6 +131,7 @@ void ACCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	{
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ACCharacter::Move);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ACCharacter::Look);
+		EnhancedInputComponent->BindAction(PrimaryProjectileAction, ETriggerEvent::Started, this, &ACCharacter::ShootPrimaryProjectile);
 	}
 }
 

@@ -51,6 +51,18 @@ protected:
 	void Look(const FInputActionValue& Value);
 
 
+	// Primary Projectile
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UInputAction* PrimaryProjectileAction;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AActor> ProjectileClass;
+
+
+	void ShootPrimaryProjectile();
+
+
+
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
