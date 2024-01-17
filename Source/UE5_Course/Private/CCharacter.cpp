@@ -10,6 +10,7 @@
 #include "Components/InputComponent.h"
 #include "DrawDebugHelpers.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "CInteractionComponent.h"
 
 
 // Sets default values
@@ -29,6 +30,7 @@ ACCharacter::ACCharacter()
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 
+	this->InteractionComp = CreateDefaultSubobject<UCInteractionComponent>("Interaction Component");
 }
 
 
@@ -89,6 +91,14 @@ void ACCharacter::ShootPrimaryProjectile()
 }
 
 
+void ACCharacter::PrimaryInteract()
+{
+	if ( InteractionComp ) // Could avoid if-check for fail-fast? 
+	{
+		InteractionComp->PrimaryInteract();
+	}
+}
+
 
 
 
@@ -141,6 +151,7 @@ void ACCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ACCharacter::Look);
 		EnhancedInputComponent->BindAction(PrimaryProjectileAction, ETriggerEvent::Started, this, &ACCharacter::ShootPrimaryProjectile);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACCharacter::Jump);
+		EnhancedInputComponent->BindAction(PrimaryInteractAction, ETriggerEvent::Started, this, &ACCharacter::PrimaryInteract);
 	}
 }
 

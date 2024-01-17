@@ -13,6 +13,7 @@ class USpringArmComponent;
 class UCameraComponent;
 class UInputMappingContext;
 class UInputAction;
+class UCInteractionComponent;
 
 UCLASS()
 class UE5_COURSE_API ACCharacter : public ACharacter
@@ -66,6 +67,20 @@ protected:
 
 
 	void ShootPrimaryProjectile();
+
+
+	// Interact Component
+	UPROPERTY(VisibleAnywhere)
+	UCInteractionComponent* InteractionComp;
+
+
+	// Interact Action
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UInputAction* PrimaryInteractAction;
+
+	void PrimaryInteract();
+
+
 
 
 
