@@ -63,6 +63,8 @@ void UCInteractionComponent::PrimaryInteract()
 
 	for (FHitResult HitResult : Hits)
 	{
+		DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, Radius, 32, LineColor, false, 2.0f);
+
 		AActor* HitActor = HitResult.GetActor();
 		if (HitActor)
 		{
@@ -70,10 +72,9 @@ void UCInteractionComponent::PrimaryInteract()
 			{
 				APawn* OwnerPawn = Cast<APawn>(MyOwner);
 				ICGameplayInterface::Execute_Interact(HitActor, OwnerPawn);
+				break;
 			}
-		}
-
-		DrawDebugSphere( GetWorld(), HitResult.ImpactPoint, Radius, 32, LineColor, false, 2.0f );
+		}		
 	}
 	
 
