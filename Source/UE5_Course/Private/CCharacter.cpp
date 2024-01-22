@@ -74,21 +74,31 @@ void ACCharacter::Jump()
 	}
 }
 
-void ACCharacter::ShootPrimaryProjectile()
+void ACCharacter::PrimaryAttack_Start()
+{
+	PlayAnimMontage(AttackAnim);
+
+	float Delay = 0.15f;
+	GetWorldTimerManager().SetTimer( TimerHandle_PrimaryAttack, this, &ACCharacter::PrimaryAttack_FireProjectile, Delay );
+}
+
+void ACCharacter::PrimaryAttack_FireProjectile()
 {
 	FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
 
 	// Spawn transformation matrix
 	// Spawn the projectile at the character's hand, moving towards the camera's rotation
-	FTransform SpawnTM = FTransform( GetControlRotation(), HandLocation );
+	FTransform SpawnTM = FTransform(GetControlRotation(), HandLocation);
 
 	// Struct containing a number of spawn properties
 	// Spawn the Actor, regardless of whether or not it is colliding with something else
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-	GetWorld()->SpawnActor<AActor>( ProjectileClass, SpawnTM, SpawnParams );
+	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTM, SpawnParams);
 }
+
+
 
 
 void ACCharacter::PrimaryInteract()
@@ -149,7 +159,7 @@ void ACCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	{
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ACCharacter::Move);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ACCharacter::Look);
-		EnhancedInputComponent->BindAction(PrimaryProjectileAction, ETriggerEvent::Started, this, &ACCharacter::ShootPrimaryProjectile);
+		EnhancedInputComponent->BindAction(PrimaryProjectileAction, ETriggerEvent::Started, this, &ACCharacter::PrimaryAttack_Start);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACCharacter::Jump);
 		EnhancedInputComponent->BindAction(PrimaryInteractAction, ETriggerEvent::Started, this, &ACCharacter::PrimaryInteract);
 	}

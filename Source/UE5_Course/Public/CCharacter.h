@@ -14,6 +14,7 @@ class UCameraComponent;
 class UInputMappingContext;
 class UInputAction;
 class UCInteractionComponent;
+class UAnimMontage;
 
 UCLASS()
 class UE5_COURSE_API ACCharacter : public ACharacter
@@ -62,11 +63,17 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	UInputAction* PrimaryProjectileAction;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = PrimaryAttack)
 	TSubclassOf<AActor> ProjectileClass;
 
+	void PrimaryAttack_Start();
 
-	void ShootPrimaryProjectile();
+	UPROPERTY(EditAnywhere, Category = PrimaryAttack)
+	UAnimMontage* AttackAnim;
+
+	void PrimaryAttack_FireProjectile();
+
+	FTimerHandle TimerHandle_PrimaryAttack;
 
 
 	// Interact Component
