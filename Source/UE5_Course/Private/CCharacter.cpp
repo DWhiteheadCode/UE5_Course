@@ -94,6 +94,7 @@ void ACCharacter::PrimaryAttack_FireProjectile()
 	// Spawn the Actor, regardless of whether or not it is colliding with something else
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	SpawnParams.Instigator = this;
 
 	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTM, SpawnParams);
 }
