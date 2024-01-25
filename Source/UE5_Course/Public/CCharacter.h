@@ -49,8 +49,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	UInputAction* JumpAction;
 
-	void Jump();
-
 
 	// Look
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)

@@ -66,13 +66,6 @@ void ACCharacter::Look(const FInputActionValue& Value)
 	}	
 }
 
-void ACCharacter::Jump()
-{
-	if (CanJump())
-	{
-		Super::Jump();
-	}
-}
 
 void ACCharacter::PrimaryAttack_Start()
 {
