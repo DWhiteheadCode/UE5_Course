@@ -96,7 +96,7 @@ void ACCharacter::PrimaryAttack_FireProjectile()
 	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTM, SpawnParams);
 }
 
-void ACCharacter::GetPrimaryProjectileRotation(FRotator& out, const FVector& HandLocation)
+void ACCharacter::GetProjectileRotation(FRotator& out, const FVector& ProjectileSpawnLocation)
 {
 	// Set up line trace params
 	FCollisionObjectQueryParams LineTraceParams;
@@ -106,7 +106,7 @@ void ACCharacter::GetPrimaryProjectileRotation(FRotator& out, const FVector& Han
 	// Set up line trace end point
 	const FRotator CameraRotation = CameraComp->GetComponentRotation();
 	const FVector CameraLocation = CameraComp->GetComponentLocation();
-	float TraceDistance = 10'000.f;
+	const float TraceDistance = 10'000.f;
 
 	FVector TraceEndLocation = CameraLocation + ( CameraRotation.Vector() * TraceDistance );
 
@@ -116,12 +116,12 @@ void ACCharacter::GetPrimaryProjectileRotation(FRotator& out, const FVector& Han
 
 
 	// Calculate default result (if no hit)
-	out = UKismetMathLibrary::FindLookAtRotation( HandLocation, TraceEndLocation );
+	out = UKismetMathLibrary::FindLookAtRotation( ProjectileSpawnLocation, TraceEndLocation );
 
 	// Calculate result if there was a hit
 	if ( HitResult.bBlockingHit )
 	{
-		out = UKismetMathLibrary::FindLookAtRotation(HandLocation, HitResult.ImpactPoint);
+		out = UKismetMathLibrary::FindLookAtRotation(ProjectileSpawnLocation, HitResult.ImpactPoint);
 	}
 }
 
