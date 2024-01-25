@@ -11,6 +11,7 @@
 #include "DrawDebugHelpers.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "CInteractionComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 
 // Sets default values
@@ -79,9 +80,12 @@ void ACCharacter::PrimaryAttack_FireProjectile()
 {
 	FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
 
+	FRotator ProjectileRotation;
+	GetPrimaryProjectileRotation(ProjectileRotation, HandLocation);
+
 	// Spawn transformation matrix
 	// Spawn the projectile at the character's hand, moving towards the camera's rotation
-	FTransform SpawnTM = FTransform(GetControlRotation(), HandLocation);
+	FTransform SpawnTM = FTransform(ProjectileRotation, HandLocation);
 
 	// Struct containing a number of spawn properties
 	// Spawn the Actor, regardless of whether or not it is colliding with something else
@@ -92,6 +96,34 @@ void ACCharacter::PrimaryAttack_FireProjectile()
 	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTM, SpawnParams);
 }
 
+void ACCharacter::GetPrimaryProjectileRotation(FRotator& out, const FVector& HandLocation)
+{
+	// Set up line trace params
+	FCollisionObjectQueryParams LineTraceParams;
+	LineTraceParams.AddObjectTypesToQuery(ECC_WorldDynamic);
+	LineTraceParams.AddObjectTypesToQuery(ECC_WorldStatic);
+
+	// Set up line trace end point
+	const FRotator CameraRotation = CameraComp->GetComponentRotation();
+	const FVector CameraLocation = CameraComp->GetComponentLocation();
+	float TraceDistance = 10'000.f;
+
+	FVector TraceEndLocation = CameraLocation + ( CameraRotation.Vector() * TraceDistance );
+
+	// Perform Line Trace
+	FHitResult HitResult;
+	GetWorld()->LineTraceSingleByObjectType( HitResult, CameraLocation, TraceEndLocation, LineTraceParams );
+
+
+	// Calculate default result (if no hit)
+	out = UKismetMathLibrary::FindLookAtRotation( HandLocation, TraceEndLocation );
+
+	// Calculate result if there was a hit
+	if ( HitResult.bBlockingHit )
+	{
+		out = UKismetMathLibrary::FindLookAtRotation(HandLocation, HitResult.ImpactPoint);
+	}
+}
 
 
 

@@ -69,7 +69,11 @@ protected:
 	UPROPERTY(EditAnywhere, Category = PrimaryAttack)
 	UAnimMontage* AttackAnim;
 
+	UFUNCTION()
 	void PrimaryAttack_FireProjectile();
+
+	UFUNCTION()
+	void GetPrimaryProjectileRotation( FRotator& out, const FVector& HandLocation );
 
 	FTimerHandle TimerHandle_PrimaryAttack;
 
