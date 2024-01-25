@@ -81,7 +81,7 @@ void ACCharacter::PrimaryAttack_FireProjectile()
 	FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
 
 	FRotator ProjectileRotation;
-	GetPrimaryProjectileRotation(ProjectileRotation, HandLocation);
+	GetProjectileRotation(ProjectileRotation, HandLocation);
 
 	// Spawn transformation matrix
 	// Spawn the projectile at the character's hand, moving towards the camera's rotation
