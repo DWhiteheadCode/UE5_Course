@@ -4,14 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "CBaseProjectile.h"
+
 #include "CMagicProjectile.generated.h"
 
-class USphereComponent;
-class UProjectileMovementComponent;
-class UParticleSystemComponent;
-
 UCLASS()
-class UE5_COURSE_API ACMagicProjectile : public AActor
+class UE5_COURSE_API ACMagicProjectile : public ACBaseProjectile
 {
 	GENERATED_BODY()
 	
@@ -19,17 +17,7 @@ public:
 	// Sets default values for this actor's properties
 	ACMagicProjectile();
 
-protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	USphereComponent* SphereComp;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	UProjectileMovementComponent* MovementComp;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	UParticleSystemComponent* EffectComp;
-
-	
+protected:	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 

@@ -26,20 +26,29 @@ public:
 	ACCharacter();
 
 protected:
-	// Camera
+	// COMPONENTS ----------------------------------------------
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* SpringArmComp;
 
 	UPROPERTY(VisibleAnywhere)
 	UCameraComponent* CameraComp;
 
+	// Interact Component
+	UPROPERTY(VisibleAnywhere)
+	UCInteractionComponent* InteractionComp;
 
-	// IMC
+	// Interact Action
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UInputAction* PrimaryInteractAction;
+
+	void PrimaryInteract();
+
+	// IMC ------------------------------------------------------
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	UInputMappingContext* MovementMappingContext;
 
 
-	// Movement
+	// MOVEMENT -------------------------------------------------
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	UInputAction* MoveAction;
 
@@ -56,43 +65,45 @@ protected:
 
 	void Look(const FInputActionValue& Value);
 
+	// GENERIC PROJECTILE ----------------------------------------
+	UFUNCTION()
+	void GetProjectileSpawnRotation(FRotator& Out, const FVector& ProjectileSpawnLocation, float TraceDistance);
 
-	// Primary Projectile
+
+	// PRIMARY PROJECTILE ---------------------------------------
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	UInputAction* PrimaryProjectileAction;
 
 	UPROPERTY(EditAnywhere, Category = PrimaryAttack)
-	TSubclassOf<AActor> ProjectileClass;
+	TSubclassOf<AActor> PrimaryProjectileClass;
 
 	void PrimaryAttack_Start();
 
 	UPROPERTY(EditAnywhere, Category = PrimaryAttack)
-	UAnimMontage* AttackAnim;
+	UAnimMontage* PrimaryAttackAnim;
 
 	UFUNCTION()
 	void PrimaryAttack_FireProjectile();
 
-	UFUNCTION()
-	void GetProjectileRotation( FRotator& out, const FVector& HandLocation );
-
 	FTimerHandle TimerHandle_PrimaryAttack;
 
-
-	// Interact Component
-	UPROPERTY(VisibleAnywhere)
-	UCInteractionComponent* InteractionComp;
-
-
-	// Interact Action
+	// BLACKHOLE PROJECTILE --------------------------------------
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	UInputAction* PrimaryInteractAction;
+	UInputAction* BlackholeProjectileAction;
 
-	void PrimaryInteract();
+	UPROPERTY(EditAnywhere, Category = BlackholeAttack)
+	TSubclassOf<AActor> BlackholeProjectileClass;
 
+	void BlackholeAttack_Start();
 
+	UPROPERTY(EditAnywhere, Category = BlackholeAttack)
+	UAnimMontage* BlackholeAttackAnim;
 
+	UFUNCTION()
+	void BlackholeAttack_FireProjectile();
 
-
+	FTimerHandle TimerHandle_BlackholeAttack;
+	
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

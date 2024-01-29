@@ -70,7 +70,7 @@ void ACCharacter::Look(const FInputActionValue& Value)
 
 void ACCharacter::PrimaryAttack_Start()
 {
-	PlayAnimMontage(AttackAnim);
+	PlayAnimMontage(PrimaryAttackAnim);
 
 	float Delay = 0.15f;
 	GetWorldTimerManager().SetTimer( TimerHandle_PrimaryAttack, this, &ACCharacter::PrimaryAttack_FireProjectile, Delay );
@@ -81,7 +81,8 @@ void ACCharacter::PrimaryAttack_FireProjectile()
 	FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
 
 	FRotator ProjectileRotation;
-	GetProjectileRotation(ProjectileRotation, HandLocation);
+	float TraceDistance = 10'000.f;
+	GetProjectileSpawnRotation(ProjectileRotation, HandLocation, TraceDistance);
 
 	// Spawn transformation matrix
 	// Spawn the projectile at the character's hand, moving towards the camera's rotation
@@ -93,10 +94,41 @@ void ACCharacter::PrimaryAttack_FireProjectile()
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	SpawnParams.Instigator = this;
 
-	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTM, SpawnParams);
+	GetWorld()->SpawnActor<AActor>(PrimaryProjectileClass, SpawnTM, SpawnParams);
 }
 
-void ACCharacter::GetProjectileRotation(FRotator& out, const FVector& ProjectileSpawnLocation)
+
+void ACCharacter::BlackholeAttack_Start()
+{
+	PlayAnimMontage(BlackholeAttackAnim);
+
+	float Delay = 0.15f;
+	GetWorldTimerManager().SetTimer(TimerHandle_BlackholeAttack, this, &ACCharacter::BlackholeAttack_FireProjectile, Delay);
+}
+
+void ACCharacter::BlackholeAttack_FireProjectile()
+{
+	FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_02");
+
+	FRotator ProjectileRotation;
+	float TraceDistance = 2500.f;
+	GetProjectileSpawnRotation(ProjectileRotation, HandLocation, TraceDistance);
+
+	// Spawn the projectile at the character's hand, moving towards the camera's rotation
+	FTransform SpawnTM = FTransform(ProjectileRotation, HandLocation);
+
+	// Spawn the Actor, regardless of whether or not it is colliding with something else
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	SpawnParams.Instigator = this;
+
+	GetWorld()->SpawnActor<AActor>(BlackholeProjectileClass, SpawnTM, SpawnParams);
+}
+
+
+
+
+void ACCharacter::GetProjectileSpawnRotation(FRotator& out, const FVector& ProjectileSpawnLocation, float TraceDistance)
 {
 	// Set up line trace params
 	FCollisionObjectQueryParams LineTraceParams;
@@ -106,14 +138,12 @@ void ACCharacter::GetProjectileRotation(FRotator& out, const FVector& Projectile
 	// Set up line trace end point
 	const FRotator CameraRotation = CameraComp->GetComponentRotation();
 	const FVector CameraLocation = CameraComp->GetComponentLocation();
-	const float TraceDistance = 10'000.f;
 
 	FVector TraceEndLocation = CameraLocation + ( CameraRotation.Vector() * TraceDistance );
 
 	// Perform Line Trace
 	FHitResult HitResult;
 	GetWorld()->LineTraceSingleByObjectType( HitResult, CameraLocation, TraceEndLocation, LineTraceParams );
-
 
 	// Calculate default result (if no hit)
 	out = UKismetMathLibrary::FindLookAtRotation( ProjectileSpawnLocation, TraceEndLocation );
@@ -176,6 +206,8 @@ void ACCharacter::Tick(float DeltaTime)
 
 }
 
+
+
 // Called to bind functionality to input
 void ACCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -188,6 +220,7 @@ void ACCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 		EnhancedInputComponent->BindAction(PrimaryProjectileAction, ETriggerEvent::Started, this, &ACCharacter::PrimaryAttack_Start);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACCharacter::Jump);
 		EnhancedInputComponent->BindAction(PrimaryInteractAction, ETriggerEvent::Started, this, &ACCharacter::PrimaryInteract);
+		EnhancedInputComponent->BindAction(BlackholeProjectileAction, ETriggerEvent::Started, this, &ACCharacter::BlackholeAttack_Start);
 	}
 }
 
