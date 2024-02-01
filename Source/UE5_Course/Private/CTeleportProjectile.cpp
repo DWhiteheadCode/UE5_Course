@@ -43,7 +43,9 @@ void ACTeleportProjectile::Detonate()
 
 void ACTeleportProjectile::Teleport()
 {
-	if (AActor* InstigatorPtr = GetInstigator())
+	AActor* InstigatorPtr = GetInstigator();
+
+	if (ensure(InstigatorPtr))
 	{
 		InstigatorPtr->TeleportTo(GetActorLocation(), InstigatorPtr->GetActorRotation());
 	}
