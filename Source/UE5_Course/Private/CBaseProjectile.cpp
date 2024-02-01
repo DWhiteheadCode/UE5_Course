@@ -34,7 +34,6 @@ void ACBaseProjectile::PostInitializeComponents()
 
 	if (GetInstigator())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("\tIgnoring instigator"))
 		SphereComp->IgnoreActorWhenMoving(GetInstigator(), true);
 	}
 
@@ -57,7 +56,6 @@ void ACBaseProjectile::Tick(float DeltaTime)
 void ACBaseProjectile::OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent,
 	FVector NormalImpulse, const FHitResult& Hit)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Projectile::OnActorHit triggered"))
 	Detonate();
 }
 
