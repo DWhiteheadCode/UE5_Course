@@ -12,6 +12,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "CInteractionComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "CAttributeComponent.h"
 
 
 // Sets default values
@@ -28,10 +29,12 @@ ACCharacter::ACCharacter()
 
 	this->SpringArmComp->bUsePawnControlRotation = false;
 
-	bUseControllerRotationYaw = false;
-	GetCharacterMovement()->bOrientRotationToMovement = true;
-
 	this->InteractionComp = CreateDefaultSubobject<UCInteractionComponent>("Interaction Component");
+
+	this->AttributeComp = CreateDefaultSubobject<UCAttributeComponent>("Attribute Component");
+
+	bUseControllerRotationYaw = false;
+	GetCharacterMovement()->bOrientRotationToMovement = true;	
 }
 
 

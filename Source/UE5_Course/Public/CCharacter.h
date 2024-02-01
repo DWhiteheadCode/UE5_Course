@@ -15,6 +15,7 @@ class UInputMappingContext;
 class UInputAction;
 class UCInteractionComponent;
 class UAnimMontage;
+class UCAttributeComponent;
 
 UCLASS()
 class UE5_COURSE_API ACCharacter : public ACharacter
@@ -27,40 +28,44 @@ public:
 
 protected:
 	// COMPONENTS ----------------------------------------------
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, Category = "Components")
 	USpringArmComponent* SpringArmComp;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UCameraComponent* CameraComp;
 
 	// Interact Component
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UCInteractionComponent* InteractionComp;
 
-	// Interact Action
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	// Attribute Component
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UCAttributeComponent* AttributeComp;
+
+	// INTERACT -------------------------------------------------
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	UInputAction* PrimaryInteractAction;
 
 	void PrimaryInteract();
 
 	// IMC ------------------------------------------------------
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	UInputMappingContext* MovementMappingContext;
 
 
 	// MOVEMENT -------------------------------------------------
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	UInputAction* MoveAction;
 
 	void Move(const FInputActionValue& Value);
 
 	// Jump
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	UInputAction* JumpAction;
 
 
 	// Look
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	UInputAction* LookAction;
 
 	void Look(const FInputActionValue& Value);
@@ -71,7 +76,7 @@ protected:
 
 
 	// PRIMARY PROJECTILE ---------------------------------------
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	UInputAction* PrimaryProjectileAction;
 
 	UPROPERTY(EditAnywhere, Category = PrimaryAttack)
@@ -89,7 +94,7 @@ protected:
 	FTimerHandle TimerHandle_PrimaryAttack;
 
 	// BLACKHOLE PROJECTILE --------------------------------------
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	UInputAction* BlackholeProjectileAction;
 
 	UPROPERTY(EditAnywhere, Category = BlackholeAttack)
@@ -107,7 +112,7 @@ protected:
 	FTimerHandle TimerHandle_BlackholeAttack;
 	
 	// TELEPORT PROJECTILE ----------------------------------------
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	UInputAction* TeleportProjectileAction;
 
 	UPROPERTY(EditAnywhere, Category = BlackholeAttack)

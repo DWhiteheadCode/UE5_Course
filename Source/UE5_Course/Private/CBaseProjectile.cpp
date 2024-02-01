@@ -30,13 +30,6 @@ void ACBaseProjectile::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	UE_LOG(LogTemp, Warning, TEXT("Projectile::PostInitializeComponents"))
-
-	if (GetInstigator())
-	{
-		SphereComp->IgnoreActorWhenMoving(GetInstigator(), true);
-	}
-
 	SphereComp->OnComponentHit.AddDynamic(this, &ACBaseProjectile::OnActorHit);
 }
 
