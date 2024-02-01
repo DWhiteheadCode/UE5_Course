@@ -122,7 +122,8 @@ void ACCharacter::BlackholeAttack_FireProjectile()
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	SpawnParams.Instigator = this;
 
-	GetWorld()->SpawnActor<AActor>(BlackholeProjectileClass, SpawnTM, SpawnParams);
+	AActor* Blackhole = GetWorld()->SpawnActor<AActor>(BlackholeProjectileClass, SpawnTM, SpawnParams);
+
 }
 
 
@@ -154,6 +155,42 @@ void ACCharacter::GetProjectileSpawnRotation(FRotator& out, const FVector& Proje
 		out = UKismetMathLibrary::FindLookAtRotation(ProjectileSpawnLocation, HitResult.ImpactPoint);
 	}
 }
+
+
+void ACCharacter::TeleportProjectile_Start()
+{
+	PlayAnimMontage(TeleportProjectileAnim);
+
+	float Delay = 0.15f;
+	GetWorldTimerManager().SetTimer(TimerHandle_TeleportProjectile, this, &ACCharacter::TeleportProjectile_FireProjectile, Delay);
+}
+
+void ACCharacter::TeleportProjectile_FireProjectile()
+{
+	FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
+
+	FRotator ProjectileRotation;
+	float TraceDistance = 1000.f;
+	GetProjectileSpawnRotation(ProjectileRotation, HandLocation, TraceDistance);
+
+	// Spawn the projectile at the character's hand, moving towards the camera's rotation
+	FTransform SpawnTM = FTransform(ProjectileRotation, HandLocation);
+
+	// Spawn the Actor, regardless of whether or not it is colliding with something else
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	SpawnParams.Instigator = this;
+
+	GetWorld()->SpawnActor<AActor>(TeleportProjectileClass, SpawnTM, SpawnParams);
+}
+
+
+
+
+
+
+
+
 
 
 
@@ -221,6 +258,7 @@ void ACCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACCharacter::Jump);
 		EnhancedInputComponent->BindAction(PrimaryInteractAction, ETriggerEvent::Started, this, &ACCharacter::PrimaryInteract);
 		EnhancedInputComponent->BindAction(BlackholeProjectileAction, ETriggerEvent::Started, this, &ACCharacter::BlackholeAttack_Start);
+		EnhancedInputComponent->BindAction(TeleportProjectileAction, ETriggerEvent::Started, this, &ACCharacter::TeleportProjectile_Start);
 	}
 }
 

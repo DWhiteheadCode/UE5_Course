@@ -76,7 +76,8 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = PrimaryAttack)
 	TSubclassOf<AActor> PrimaryProjectileClass;
-
+	
+	UFUNCTION()
 	void PrimaryAttack_Start();
 
 	UPROPERTY(EditAnywhere, Category = PrimaryAttack)
@@ -94,6 +95,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category = BlackholeAttack)
 	TSubclassOf<AActor> BlackholeProjectileClass;
 
+	UFUNCTION()
 	void BlackholeAttack_Start();
 
 	UPROPERTY(EditAnywhere, Category = BlackholeAttack)
@@ -104,6 +106,33 @@ protected:
 
 	FTimerHandle TimerHandle_BlackholeAttack;
 	
+	// TELEPORT PROJECTILE ----------------------------------------
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UInputAction* TeleportProjectileAction;
+
+	UPROPERTY(EditAnywhere, Category = BlackholeAttack)
+	TSubclassOf<AActor> TeleportProjectileClass;
+
+	UFUNCTION()
+	void TeleportProjectile_Start();
+
+	UPROPERTY(EditAnywhere, Category = BlackholeAttack)
+	UAnimMontage* TeleportProjectileAnim;
+
+	UFUNCTION()
+	void TeleportProjectile_FireProjectile();
+
+	FTimerHandle TimerHandle_TeleportProjectile;
+
+
+
+
+
+
+
+
+
+
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

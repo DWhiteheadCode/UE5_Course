@@ -6,13 +6,11 @@
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ACBaseProjectile::ACBaseProjectile()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
 	SphereComp = CreateDefaultSubobject<USphereComponent>("SphereComp");
 	SphereComp->SetCollisionProfileName("Projectile");
 
@@ -25,19 +23,50 @@ ACBaseProjectile::ACBaseProjectile()
 	MovementComp->InitialSpeed = MovementSpeed;
 	MovementComp->bRotationFollowsVelocity = true;
 	MovementComp->bInitialVelocityInLocalSpace = true;
-	MovementComp->ProjectileGravityScale = 0;
+	MovementComp->ProjectileGravityScale = 0.0f;
 }
+
+void ACBaseProjectile::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	UE_LOG(LogTemp, Warning, TEXT("Projectile::PostInitializeComponents"))
+
+	if (GetInstigator())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("\tIgnoring instigator"))
+		SphereComp->IgnoreActorWhenMoving(GetInstigator(), true);
+	}
+
+	SphereComp->OnComponentHit.AddDynamic(this, &ACBaseProjectile::OnActorHit);
+}
+
 
 // Called when the game starts or when spawned
 void ACBaseProjectile::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
 void ACBaseProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+void ACBaseProjectile::OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent,
+	FVector NormalImpulse, const FHitResult& Hit)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Projectile::OnActorHit triggered"))
+	Detonate();
+}
+
+void ACBaseProjectile::Detonate()
+{
+	if (ensure(!IsPendingKill()))
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(this, ImpactVFX, GetActorLocation(), GetActorRotation());
+		this->Destroy();
+	}	
 }
 

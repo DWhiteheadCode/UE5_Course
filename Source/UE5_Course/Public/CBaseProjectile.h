@@ -9,8 +9,9 @@
 class UProjectileMovementComponent;
 class USphereComponent;
 class UParticleSystemComponent;
+class UParticleSystem;
 
-UCLASS()
+UCLASS(ABSTRACT)
 class UE5_COURSE_API ACBaseProjectile : public AActor
 {
 	GENERATED_BODY()
@@ -23,17 +24,29 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	virtual void PostInitializeComponents() override;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Effects")
+	UParticleSystem* ImpactVFX;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UProjectileMovementComponent* MovementComp;
 
 	UPROPERTY(VisibleAnywhere)
 	float MovementSpeed = 1000.f;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USphereComponent* SphereComp;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UParticleSystemComponent* EffectComp;
+
+	UFUNCTION()
+	virtual void OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent,
+		FVector NormalImpulse, const FHitResult& Hit);
+
+	UFUNCTION()
+	virtual void Detonate();
 
 public:	
 	// Called every frame
