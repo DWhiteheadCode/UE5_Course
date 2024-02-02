@@ -41,6 +41,7 @@ void UCInteractionComponent::PrimaryInteract()
 	Params.AddObjectTypesToQuery(ECC_WorldDynamic); // Check collisions with WorldDynamic objects
 
 	AActor* MyOwner = GetOwner();
+	ensure(MyOwner);
 
 	FVector EyeLocation;
 	FRotator EyeRotation;
@@ -61,7 +62,7 @@ void UCInteractionComponent::PrimaryInteract()
 	// Red if it was a hit, blue otherwise
 	FColor LineColor = bBlockingHit ? FColor::Red : FColor::Blue;
 
-	for (FHitResult HitResult : Hits)
+	for (FHitResult& HitResult : Hits)
 	{
 		DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, Radius, 32, LineColor, false, 2.0f);
 
