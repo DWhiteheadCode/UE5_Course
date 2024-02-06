@@ -10,6 +10,7 @@ class UProjectileMovementComponent;
 class USphereComponent;
 class UParticleSystemComponent;
 class UParticleSystem;
+class USoundCue;
 
 UCLASS(ABSTRACT)
 class UE5_COURSE_API ACBaseProjectile : public AActor
@@ -40,6 +41,12 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UParticleSystemComponent* EffectComp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UAudioComponent* AudioComp;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Sound")
+	USoundCue* ImpactSound;
 
 	UFUNCTION()
 	virtual void OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent,

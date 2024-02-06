@@ -8,6 +8,9 @@
 
 #include "CMagicProjectile.generated.h"
 
+class UAudioComponent;
+class USoundCue;
+
 UCLASS()
 class UE5_COURSE_API ACMagicProjectile : public ACBaseProjectile
 {
