@@ -48,6 +48,11 @@ void ACCharacter::PostInitializeComponents()
 
 void ACCharacter::OnHealthChanged(AActor* InstigatorActor, UCAttributeComponent* OwningComp, float NewHealth, float Delta)
 {
+	if (Delta < 0.0f)
+	{
+		GetMesh()->SetScalarParameterValueOnMaterials("TimeOfLastHit", GetWorld()->TimeSeconds);
+	}
+
 	// Character has taken damage that drops health to/below 0
 	if (NewHealth <= 0.0f && Delta < 0.0f)
 	{
