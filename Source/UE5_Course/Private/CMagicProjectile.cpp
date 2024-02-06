@@ -9,6 +9,10 @@
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
 
+ACMagicProjectile::ACMagicProjectile()
+{
+	Damage = 20.0f;
+}
 
 void ACMagicProjectile::PostInitializeComponents()
 {
@@ -32,7 +36,7 @@ void ACMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent,
 
 		if (AttributeComp) // OtherActor might not have an AttributeComponent, in which case this would be nullptr
 		{
-			AttributeComp->ApplyHealthChange(-20.0f);
+			AttributeComp->ApplyHealthChange( Damage * -1 ); // Convert damage value into a negative health change
 			this->Destroy(); // The projectile has hit something, so it can be destroyed
 		}
 	}
