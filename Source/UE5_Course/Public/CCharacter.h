@@ -130,7 +130,9 @@ protected:
 	FTimerHandle TimerHandle_TeleportProjectile;
 
 
-
+	// ON HEALTH CHANGED ---------------------------------------------
+	UFUNCTION()
+	void OnHealthChanged(AActor* InstigatorActor, UCAttributeComponent* OwningComp, float NewHealth, float Delta);
 
 
 
@@ -141,6 +143,8 @@ protected:
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	virtual void PostInitializeComponents() override;
 
 public:	
 	// Called every frame

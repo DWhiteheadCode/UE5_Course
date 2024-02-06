@@ -9,6 +9,10 @@ UCAttributeComponent::UCAttributeComponent()
 	Health = 100;
 }
 
+bool UCAttributeComponent::IsAlive() const
+{
+	return Health > 0.0f;
+}
 
 
 bool UCAttributeComponent::ApplyHealthChange(float Delta)

@@ -37,6 +37,27 @@ ACCharacter::ACCharacter()
 	GetCharacterMovement()->bOrientRotationToMovement = true;	
 }
 
+void ACCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	AttributeComp->OnHealthChanged.AddDynamic(this, &ACCharacter::OnHealthChanged);
+}
+
+
+
+void ACCharacter::OnHealthChanged(AActor* InstigatorActor, UCAttributeComponent* OwningComp, float NewHealth, float Delta)
+{
+	// Character has taken damage that drops health to/below 0
+	if (NewHealth <= 0.0f && Delta < 0.0f)
+	{
+		if ( APlayerController* PC = Cast<APlayerController>(GetController()) )
+		{
+			DisableInput(PC);
+		}
+	}
+}
+
 
 
 void ACCharacter::Move(const FInputActionValue& Value)
