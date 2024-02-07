@@ -42,6 +42,13 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UCAttributeComponent* AttributeComp;
 
+	// SOCKET NAMES ---------------------------------------------
+	UPROPERTY(VisibleAnywhere, Category = "Socket Names")
+	FName RightHandSocketName;
+
+	UPROPERTY(VisibleAnywhere, Category = "Socket Names")
+	FName LeftHandSocketName;
+
 	// INTERACT -------------------------------------------------
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	UInputAction* PrimaryInteractAction;

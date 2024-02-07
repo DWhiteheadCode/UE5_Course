@@ -12,41 +12,19 @@ ACHealthPickup::ACHealthPickup()
 
 void ACHealthPickup::Interact_Implementation(APawn* InstigatorPawn)
 {
-	if (UCAttributeComponent* InstigatorAttributeComp = GetInstigatorAttributeComp(InstigatorPawn))
+	if (! ensure(InstigatorPawn))
 	{
-		if (!bIsOnCooldown && !InstigatorIsMaxHealth(InstigatorAttributeComp))
-		{
-			InstigatorAttributeComp->ApplyHealthChange(AmountToHeal);
+		return;
+	}
 
+	UCAttributeComponent* AttributeComp = Cast<UCAttributeComponent>(InstigatorPawn->GetComponentByClass(UCAttributeComponent::StaticClass()));
+	if (ensure(AttributeComp) && AttributeComp->IsFullHealth())
+	{
+		if (AttributeComp->ApplyHealthChange(AmountToHeal)) // Try to apply the change. Go on cooldown if successful
+		{
 			StartCooldown();
 		}
 	}
 }
 
-bool ACHealthPickup::InstigatorIsMaxHealth(UCAttributeComponent* InstigatorAttributeComp)
-{
-	if (InstigatorAttributeComp)
-	{
-		if (InstigatorAttributeComp->GetHealth() == InstigatorAttributeComp->GetHealthMax())
-		{
-			return true;
-		}
-	}
-	
-	return false;
-}
 
-UCAttributeComponent* ACHealthPickup::GetInstigatorAttributeComp(APawn* InstigatorPawn)
-{
-	if (InstigatorPawn)
-	{
-		UCAttributeComponent* AttributeComp = Cast<UCAttributeComponent>(InstigatorPawn->GetComponentByClass(UCAttributeComponent::StaticClass()));
-
-		if (AttributeComp)
-		{
-			return AttributeComp;
-		}
-	}
-
-	return nullptr;
-}

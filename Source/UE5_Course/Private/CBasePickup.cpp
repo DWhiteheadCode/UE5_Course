@@ -9,34 +9,33 @@
 ACBasePickup::ACBasePickup()
 {
 	SphereComp = CreateDefaultSubobject<USphereComponent>("SphereComp");
+	SphereComp->SetCollisionProfileName("Pickup");
 	SphereComp->SetSphereRadius(48.0f);
+
 	RootComponent = SphereComp;
 
 	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>("MeshComp");
 	MeshComp->SetupAttachment(SphereComp);
+	MeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-	bIsOnCooldown = false;
-	Cooldown = 10;
+	CooldownTime = 10;
 }
 
-// Base implementation doesn't have any functionality aside from hiding the pickup for `Cooldown` 
+
 void ACBasePickup::Interact_Implementation(APawn* InstigatorPawn)
 {
-	if (!bIsOnCooldown)
-	{
-		StartCooldown();
-	}
+	// Logic in child class(es)
 }
 
 void ACBasePickup::StartCooldown()
 {
-	bIsOnCooldown = true;
 	MeshComp->SetVisibility(false, true);
-	GetWorldTimerManager().SetTimer(TimerHandle_PickupCooldown, this, &ACBasePickup::OnCooldownEnd, Cooldown);
+	GetWorldTimerManager().SetTimer(TimerHandle_PickupCooldown, this, &ACBasePickup::OnCooldownEnd, CooldownTime);
+	SetActorEnableCollision(false);
 }
 
 void ACBasePickup::OnCooldownEnd()
-{
-	bIsOnCooldown = false;
+{	
 	MeshComp->SetVisibility(true, true);
+	SetActorEnableCollision(true);
 }

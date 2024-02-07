@@ -16,14 +16,23 @@ bool UCAttributeComponent::IsAlive() const
 	return Health > 0.0f;
 }
 
+bool UCAttributeComponent::IsFullHealth() const
+{
+	return Health == HealthMax;
+}
 
+
+// Returns true if a change was applied and false otherwise.
+// E.g.: If Delta < 0 && Health == 0, this will return false
 bool UCAttributeComponent::ApplyHealthChange(float Delta)
 {
+	float OldHealth = Health;
 	Health = FMath::Clamp( Health + Delta, 0, HealthMax );
+	float ActualDelta = Health - OldHealth;
 
-	OnHealthChanged.Broadcast( nullptr, this, Health, Delta );
+	OnHealthChanged.Broadcast( nullptr, this, Health, Delta ); // Note: Will broadcast even if ActualDelta == 0
 
-	return true;
+	return ActualDelta != 0; 
 }
 
 float UCAttributeComponent::GetHealthMax() const

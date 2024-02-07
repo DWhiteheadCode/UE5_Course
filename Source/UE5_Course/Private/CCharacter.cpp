@@ -36,6 +36,9 @@ ACCharacter::ACCharacter()
 
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;	
+
+	RightHandSocketName = "Muzzle_01";
+	LeftHandSocketName = "Muzzle_02";
 }
 
 void ACCharacter::PostInitializeComponents()
@@ -110,7 +113,7 @@ void ACCharacter::PrimaryAttack_Start()
 
 void ACCharacter::PrimaryAttack_FireProjectile()
 {
-	FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
+	FVector HandLocation = GetMesh()->GetSocketLocation(RightHandSocketName);
 
 	FRotator ProjectileRotation;
 	float TraceDistance = 10'000.f;
@@ -140,7 +143,7 @@ void ACCharacter::BlackholeAttack_Start()
 
 void ACCharacter::BlackholeAttack_FireProjectile()
 {
-	FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_02");
+	FVector HandLocation = GetMesh()->GetSocketLocation(LeftHandSocketName);
 
 	FRotator ProjectileRotation;
 	float TraceDistance = 2500.f;
@@ -199,7 +202,7 @@ void ACCharacter::TeleportProjectile_Start()
 
 void ACCharacter::TeleportProjectile_FireProjectile()
 {
-	FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
+	FVector HandLocation = GetMesh()->GetSocketLocation(RightHandSocketName);
 
 	FRotator ProjectileRotation;
 	float TraceDistance = 1000.f;

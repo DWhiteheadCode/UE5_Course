@@ -18,12 +18,6 @@ class UE5_COURSE_API ACHealthPickup : public ACBasePickup
 	void Interact_Implementation(APawn* InstigatorPawn);
 
 protected:
-	UFUNCTION()
-	bool InstigatorIsMaxHealth(UCAttributeComponent* InstigatorAttributeComp);
-
-	UFUNCTION()
-	UCAttributeComponent* GetInstigatorAttributeComp(APawn* InstigatorPawn);
-
 	UPROPERTY(EditAnywhere)
 	float AmountToHeal;
 

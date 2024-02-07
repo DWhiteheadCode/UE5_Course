@@ -32,10 +32,7 @@ protected:
 
 	// COOLDOWN ---------------------------------------------
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float Cooldown;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	bool bIsOnCooldown;
+	float CooldownTime;
 
 	FTimerHandle TimerHandle_PickupCooldown;
 
