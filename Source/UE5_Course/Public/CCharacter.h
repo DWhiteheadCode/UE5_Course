@@ -79,19 +79,22 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	UInputAction* PrimaryProjectileAction;
 
-	UPROPERTY(EditAnywhere, Category = PrimaryAttack)
+	UPROPERTY(EditAnywhere, Category = "PrimaryAttack")
 	TSubclassOf<AActor> PrimaryProjectileClass;
 	
 	UFUNCTION()
 	void PrimaryAttack_Start();
 
-	UPROPERTY(EditAnywhere, Category = PrimaryAttack)
+	UPROPERTY(EditAnywhere, Category = "PrimaryAttack")
 	UAnimMontage* PrimaryAttackAnim;
 
 	UFUNCTION()
 	void PrimaryAttack_FireProjectile();
 
 	FTimerHandle TimerHandle_PrimaryAttack;
+
+	UPROPERTY(EditAnywhere, Category = "PrimaryAttack")
+	UParticleSystem* PrimaryAttackCastHandVFX;
 
 	// BLACKHOLE PROJECTILE --------------------------------------
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")

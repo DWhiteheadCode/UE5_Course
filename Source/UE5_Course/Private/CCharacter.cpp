@@ -13,6 +13,7 @@
 #include "CInteractionComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "CAttributeComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 
 // Sets default values
@@ -100,6 +101,8 @@ void ACCharacter::Look(const FInputActionValue& Value)
 void ACCharacter::PrimaryAttack_Start()
 {
 	PlayAnimMontage(PrimaryAttackAnim);
+
+	UGameplayStatics::SpawnEmitterAttached(PrimaryAttackCastHandVFX, GetMesh(), "Muzzle_01");
 
 	float Delay = 0.15f;
 	GetWorldTimerManager().SetTimer( TimerHandle_PrimaryAttack, this, &ACCharacter::PrimaryAttack_FireProjectile, Delay );
