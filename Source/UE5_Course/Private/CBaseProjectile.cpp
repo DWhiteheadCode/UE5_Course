@@ -64,6 +64,7 @@ void ACBaseProjectile::Detonate()
 	{
 		UGameplayStatics::SpawnEmitterAtLocation(this, ImpactVFX, GetActorLocation(), GetActorRotation());
 		UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), GetActorRotation());
+		UGameplayStatics::PlayWorldCameraShake(this, ImpactCameraShake, GetActorLocation(), 0.f, 1500.f );
 		this->Destroy();
 	}	
 }
