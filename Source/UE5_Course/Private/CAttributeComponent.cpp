@@ -31,4 +31,9 @@ float UCAttributeComponent::GetHealthMax() const
 	return HealthMax;
 }
 
+float UCAttributeComponent::GetHealth() const
+{
+	return Health;
+}
+
 
