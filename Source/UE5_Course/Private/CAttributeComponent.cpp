@@ -18,7 +18,7 @@ bool UCAttributeComponent::IsAlive() const
 
 bool UCAttributeComponent::IsFullHealth() const
 {
-	return Health == HealthMax;
+	return (Health == HealthMax);
 }
 
 
@@ -27,7 +27,7 @@ bool UCAttributeComponent::IsFullHealth() const
 bool UCAttributeComponent::ApplyHealthChange(float Delta)
 {
 	float OldHealth = Health;
-	Health = FMath::Clamp( Health + Delta, 0, HealthMax );
+	Health = FMath::Clamp( (Health + Delta), 0, HealthMax );
 	float ActualDelta = Health - OldHealth;
 
 	OnHealthChanged.Broadcast( nullptr, this, Health, Delta ); // Note: Will broadcast even if ActualDelta == 0
