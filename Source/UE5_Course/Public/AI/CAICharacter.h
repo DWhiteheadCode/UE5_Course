@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "CAICharacter.generated.h"
 
+class UPawnSensingComponent;
+
 UCLASS()
 class UE5_COURSE_API ACAICharacter : public ACharacter
 {
@@ -16,13 +18,12 @@ public:
 	ACAICharacter();
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+	void PostInitializeComponents() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UPawnSensingComponent* PawnSensingComp;
 
-	
+	UFUNCTION()
+	void OnPawnSeen(APawn* Pawn);
 
 };
