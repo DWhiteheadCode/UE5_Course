@@ -15,7 +15,7 @@ void UCBTService_CheckAttackRange::TickNode(UBehaviorTreeComponent& OwnerComp, u
 	{
 		AActor* TargetActor = Cast<AActor>(BlackBoardComp->GetValueAsObject("TargetActor"));
 
-		if (TargetActor) // No "ensure" here as apparently this could be null. Should only be null if TargetActor set incorrectly/ not set?
+		if (TargetActor) // No "ensure" here as apparently this could be null
 		{
 			AAIController* MyController = OwnerComp.GetAIOwner();
 

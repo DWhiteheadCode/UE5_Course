@@ -170,6 +170,7 @@ void ACCharacter::GetProjectileSpawnRotation(FRotator& out, const FVector& Proje
 	FCollisionObjectQueryParams LineTraceParams;
 	LineTraceParams.AddObjectTypesToQuery(ECC_WorldDynamic);
 	LineTraceParams.AddObjectTypesToQuery(ECC_WorldStatic);
+	LineTraceParams.AddObjectTypesToQuery(ECC_Pawn);
 
 	// Set up line trace end point
 	const FRotator CameraRotation = CameraComp->GetComponentRotation();
