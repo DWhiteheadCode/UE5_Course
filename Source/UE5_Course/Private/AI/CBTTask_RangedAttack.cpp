@@ -13,7 +13,7 @@ EBTNodeResult::Type UCBTTask_RangedAttack::ExecuteTask(UBehaviorTreeComponent& O
 	if (ensure(MyController))
 	{
 		ACharacter* MyPawn = Cast<ACharacter>(MyController->GetPawn());
-		if (MyPawn == nullptr) // Not sure why this isn't an ensure()
+		if (MyPawn == nullptr) 
 		{
 			return EBTNodeResult::Failed;
 		}

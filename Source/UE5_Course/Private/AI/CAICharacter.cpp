@@ -6,11 +6,13 @@
 #include "Perception/PawnSensingComponent.h"
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "CAttributeComponent.h"
 
 // Sets default values
 ACAICharacter::ACAICharacter()
 {
     PawnSensingComp = CreateDefaultSubobject<UPawnSensingComponent>("PawnSensingComp");
+    AttributeComp = CreateDefaultSubobject<UCAttributeComponent>("AttributeComp");
 }
 
 void ACAICharacter::PostInitializeComponents()

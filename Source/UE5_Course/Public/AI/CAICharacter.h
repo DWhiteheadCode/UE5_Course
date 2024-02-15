@@ -7,6 +7,7 @@
 #include "CAICharacter.generated.h"
 
 class UPawnSensingComponent;
+class UCAttributeComponent;
 
 UCLASS()
 class UE5_COURSE_API ACAICharacter : public ACharacter
@@ -22,6 +23,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UPawnSensingComponent* PawnSensingComp;
+
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UCAttributeComponent* AttributeComp;
 
 	UFUNCTION()
 	void OnPawnSeen(APawn* Pawn);
