@@ -31,12 +31,6 @@ void ACAICharacter::OnPawnSeen(APawn* Pawn)
     {
         UBlackboardComponent* BlackboardComp = AIC->GetBlackboardComponent();
         BlackboardComp->SetValueAsObject("TargetActor", Pawn);
-        DrawDebugString(GetWorld(), GetActorLocation(), "PLAYER SPOTTED", nullptr, FColor::White, 4.0f, true);
+        //DrawDebugString(GetWorld(), GetActorLocation(), "PLAYER SPOTTED", nullptr, FColor::White, 4.0f, true);
     }
 }
-
-
-
-
-
-

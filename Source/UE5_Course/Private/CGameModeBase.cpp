@@ -6,6 +6,10 @@
 #include "EnvironmentQuery/EnvQueryManager.h"
 #include "EnvironmentQuery/EnvQueryTypes.h"
 #include "EnvironmentQuery/EnvQueryInstanceBlueprintWrapper.h"
+#include "EngineUtils.h"
+
+#include "AI/CAICharacter.h"
+#include "CAttributeComponent.h"
 
 ACGameModeBase::ACGameModeBase()
 {
@@ -38,6 +42,31 @@ void ACGameModeBase::OnBotSpawnQueryFinished(UEnvQueryInstanceBlueprintWrapper* 
 		UE_LOG(LogTemp, Warning, TEXT("Spawn Bot EQS Failed!"));
 		return;
 	}
+
+
+	int32 NumOfAliveBots = 0;
+	for ( TActorIterator<ACAICharacter> It(GetWorld()); It; ++It )
+	{
+		ACAICharacter* Bot = *It;
+
+		UCAttributeComponent* AttributeComp = Cast<UCAttributeComponent>(Bot->GetComponentByClass(UCAttributeComponent::StaticClass()));
+		if (AttributeComp && AttributeComp->IsAlive())
+		{
+			NumOfAliveBots++;
+		}
+	}
+
+	float MaxBots = 10.0f; // Arbitrary default. Will be used if the ensureMsgf() fails
+	if (ensureMsgf(MaxNumMinionsCurve, TEXT("Must set MaxNumMinionsCurve in UE5 GameMode BP")))
+	{
+		MaxBots = MaxNumMinionsCurve->GetFloatValue(GetWorld()->TimeSeconds);
+	}
+
+	if (NumOfAliveBots >= MaxBots)
+	{
+		return;
+	}
+
 
 	TArray<FVector> Locations = QueryInstance->GetResultsAsLocations();
 

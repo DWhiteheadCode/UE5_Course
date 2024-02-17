@@ -10,6 +10,7 @@
 
 class UEnvQuery;
 class UEnvQueryInstanceBlueprintWrapper;
+class UCurveFloat;
 
 UCLASS()
 class UE5_COURSE_API ACGameModeBase : public AGameModeBase
@@ -22,6 +23,9 @@ public:
 	virtual void StartPlay() override;
 
 protected:
+	UPROPERTY(EditDefaultsOnly, Category = "AI")
+	UCurveFloat* MaxNumMinionsCurve;
+
 	FTimerHandle TimerHandle_BotSpawn;
 
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
