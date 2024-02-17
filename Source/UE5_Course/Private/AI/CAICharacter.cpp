@@ -13,6 +13,8 @@ ACAICharacter::ACAICharacter()
 {
     PawnSensingComp = CreateDefaultSubobject<UPawnSensingComponent>("PawnSensingComp");
     AttributeComp = CreateDefaultSubobject<UCAttributeComponent>("AttributeComp");
+
+    AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 }
 
 void ACAICharacter::PostInitializeComponents()
