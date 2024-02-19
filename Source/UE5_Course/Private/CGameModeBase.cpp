@@ -25,27 +25,9 @@ void ACGameModeBase::StartPlay()
 
 void ACGameModeBase::BotSpawnTimerElapsed()
 {
-	UEnvQueryInstanceBlueprintWrapper* QueryInstance = UEnvQueryManager::RunEQSQuery(this, SpawnBotQuery, this, EEnvQueryRunMode::RandomBest5Pct, nullptr);
-		
-	// Could be nullptr if SpawnBotQuery wasn't set properly in BP
-	if (ensure(QueryInstance)) 
-	{
-		// EQS Queries run asynchronously, so to use the result we need to bind to `GetOnQueryFinishedEvent()`
-		QueryInstance->GetOnQueryFinishedEvent().AddDynamic(this, &ACGameModeBase::OnBotSpawnQueryFinished);
-	}	
-}
-
-void ACGameModeBase::OnBotSpawnQueryFinished(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus)
-{
-	if (QueryStatus != EEnvQueryStatus::Success)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Spawn Bot EQS Failed!"));
-		return;
-	}
-
-
+	// Check the number of Alive bots
 	int32 NumOfAliveBots = 0;
-	for ( TActorIterator<ACAICharacter> It(GetWorld()); It; ++It )
+	for (TActorIterator<ACAICharacter> It(GetWorld()); It; ++It)
 	{
 		ACAICharacter* Bot = *It;
 
@@ -64,6 +46,7 @@ void ACGameModeBase::OnBotSpawnQueryFinished(UEnvQueryInstanceBlueprintWrapper* 
 		MaxBots = MaxNumMinionsCurve->GetFloatValue(GetWorld()->TimeSeconds);
 	}
 
+	// If the number of Alive bots >= MaxBots, don't spawn a new bot
 	if (NumOfAliveBots >= MaxBots)
 	{
 		UE_LOG(LogTemp, Log, TEXT("Max number of bots are alive. Skipping bot spawn."))
@@ -71,6 +54,25 @@ void ACGameModeBase::OnBotSpawnQueryFinished(UEnvQueryInstanceBlueprintWrapper* 
 	}
 
 
+	// Run EQS Query to check where the new bot should spawn
+	UEnvQueryInstanceBlueprintWrapper* QueryInstance = UEnvQueryManager::RunEQSQuery(this, SpawnBotQuery, this, EEnvQueryRunMode::RandomBest5Pct, nullptr);
+		
+	// Could be nullptr if SpawnBotQuery wasn't set properly in BP
+	if (ensure(QueryInstance)) 
+	{
+		// EQS Queries run asynchronously, so to use the result we need to bind to `GetOnQueryFinishedEvent()`
+		QueryInstance->GetOnQueryFinishedEvent().AddDynamic(this, &ACGameModeBase::OnBotSpawnQueryFinished);
+	}	
+}
+
+void ACGameModeBase::OnBotSpawnQueryFinished(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus)
+{
+	if (QueryStatus != EEnvQueryStatus::Success)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Spawn Bot EQS Failed!"));
+		return;
+	}
+	
 	TArray<FVector> Locations = QueryInstance->GetResultsAsLocations();
 
 	if (Locations.Num() > 0)
