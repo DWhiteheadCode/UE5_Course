@@ -51,7 +51,7 @@ UCAttributeComponent* UCAttributeComponent::GetAttributeComponent(AActor* FromAc
 {
 	if (FromActor)
 	{
-		return Cast<UCAttributeComponent>(FromActor->GetComponentByClass(UCAttributeComponent::StaticClass()));
+		return FromActor->FindComponentByClass<UCAttributeComponent>();
 	}
 
 	return nullptr;
