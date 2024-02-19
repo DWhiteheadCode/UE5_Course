@@ -50,7 +50,7 @@ void ACGameModeBase::OnBotSpawnQueryFinished(UEnvQueryInstanceBlueprintWrapper* 
 		ACAICharacter* Bot = *It;
 
 		UCAttributeComponent* AttributeComp = Cast<UCAttributeComponent>(Bot->GetComponentByClass(UCAttributeComponent::StaticClass()));
-		if (AttributeComp && AttributeComp->IsAlive())
+		if (ensure(AttributeComp) && AttributeComp->IsAlive())
 		{
 			NumOfAliveBots++;
 		}
