@@ -6,6 +6,12 @@
 #include "AiController.h"
 #include "GameFramework/Character.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "CAttributeComponent.h"
+
+UCBTTask_RangedAttack::UCBTTask_RangedAttack()
+{
+	MaxWeaponSpread = 4.0f;
+}
 
 EBTNodeResult::Type UCBTTask_RangedAttack::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
@@ -24,9 +30,17 @@ EBTNodeResult::Type UCBTTask_RangedAttack::ExecuteTask(UBehaviorTreeComponent& O
 			return EBTNodeResult::Failed;
 		}
 		
+		if (UCAttributeComponent::IsActorAlive(TargetActor))
+		{
+			return EBTNodeResult::Failed;
+		}
+
 		FVector MuzzleLocation = MyPawn->GetMesh()->GetSocketLocation("Muzzle_01");
 		FVector DirectionToTarget = TargetActor->GetActorLocation() - MuzzleLocation;
 		FRotator MuzzleRotation = DirectionToTarget.Rotation();
+
+		MuzzleRotation.Pitch += FMath::RandRange( 0.f, MaxWeaponSpread );
+		MuzzleRotation.Yaw += FMath::RandRange(-MaxWeaponSpread, MaxWeaponSpread);
 
 		FActorSpawnParameters Params;
 		Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
@@ -40,3 +54,5 @@ EBTNodeResult::Type UCBTTask_RangedAttack::ExecuteTask(UBehaviorTreeComponent& O
 
 	return EBTNodeResult::Failed;
 }
+
+

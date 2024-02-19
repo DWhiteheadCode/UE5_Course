@@ -16,8 +16,14 @@ class UE5_COURSE_API UCBTTask_RangedAttack : public UBTTaskNode
 	
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 
+public:
+	UCBTTask_RangedAttack();
+
 protected:
 	UPROPERTY(EditAnywhere, Category = "AI")
 	TSubclassOf<AActor> ProjectileClass;
+
+	UPROPERTY(EditAnywhere, Category = "AI")
+	float MaxWeaponSpread;
 
 };
