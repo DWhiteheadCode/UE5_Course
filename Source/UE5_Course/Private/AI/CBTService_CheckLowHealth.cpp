@@ -23,7 +23,7 @@ void UCBTService_CheckLowHealth::TickNode(UBehaviorTreeComponent& OwnerComp, uin
 		return;
 	}
 
-	UCAttributeComponent* MyAttributeComp = Cast<UCAttributeComponent>(MyPawn->GetComponentByClass(UCAttributeComponent::StaticClass()));
+	UCAttributeComponent* MyAttributeComp = UCAttributeComponent::GetAttributeComponent(MyPawn);
 	if ( ! ensureMsgf(MyAttributeComp, TEXT("Can't call CheckLowHealth node on Actor without UCAttributeComponent")))
 	{
 		return;

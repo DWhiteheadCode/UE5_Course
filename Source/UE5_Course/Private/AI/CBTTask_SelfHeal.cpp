@@ -21,7 +21,7 @@ EBTNodeResult::Type UCBTTask_SelfHeal::ExecuteTask(UBehaviorTreeComponent& Owner
 		return EBTNodeResult::Failed;
 	}
 
-	UCAttributeComponent* MyAttributeComp = Cast<UCAttributeComponent>(MyPawn->GetComponentByClass(UCAttributeComponent::StaticClass()));
+	UCAttributeComponent* MyAttributeComp = UCAttributeComponent::GetAttributeComponent(MyPawn);
 	if (! ensureMsgf(MyAttributeComp, TEXT("Self heal node called on pawn without UCAttributeComponent")))
 	{
 		return EBTNodeResult::Failed;

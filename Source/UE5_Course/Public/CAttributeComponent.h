@@ -23,6 +23,9 @@ public:
 	// Sets default values for this component's properties
 	UCAttributeComponent();
 
+	UFUNCTION(BlueprintCallable, Category = "Attributes")
+	static UCAttributeComponent* GetAttributeComponent(AActor* FromActor);
+
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes")
 	float Health;

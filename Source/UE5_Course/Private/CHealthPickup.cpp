@@ -17,7 +17,7 @@ void ACHealthPickup::Interact_Implementation(APawn* InstigatorPawn)
 		return;
 	}
 
-	UCAttributeComponent* AttributeComp = Cast<UCAttributeComponent>(InstigatorPawn->GetComponentByClass(UCAttributeComponent::StaticClass()));
+	UCAttributeComponent* AttributeComp = UCAttributeComponent::GetAttributeComponent(InstigatorPawn);
 	if (ensure(AttributeComp) && !AttributeComp->IsFullHealth())
 	{		
 		if (AttributeComp->ApplyHealthChange(this, AmountToHeal)) // Try to apply the change. Go on cooldown if successful

@@ -32,7 +32,7 @@ void ACMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent,
 		// Get the AttributeComponent that belongs to OtherActor
 		// GetComponentByClass returns a "UActorComponent*", which we then cast to "UCAttributeComponent"
 		//     GetComponentByClass takes the class of the component we want. This is acquired using the ::StaticClass() method on our class
-		UCAttributeComponent* AttributeComp = Cast<UCAttributeComponent>( OtherActor->GetComponentByClass( UCAttributeComponent::StaticClass() ) );
+		UCAttributeComponent* AttributeComp = UCAttributeComponent::GetAttributeComponent(OtherActor);
 
 		if (AttributeComp) // OtherActor might not have an AttributeComponent, in which case this would be nullptr
 		{

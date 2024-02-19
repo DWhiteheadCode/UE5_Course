@@ -11,6 +11,8 @@ UCAttributeComponent::UCAttributeComponent()
 	HealthMax = 100;
 }
 
+
+
 bool UCAttributeComponent::IsAlive() const
 {
 	return Health > 0.0f;
@@ -45,4 +47,13 @@ float UCAttributeComponent::GetHealth() const
 	return Health;
 }
 
+UCAttributeComponent* UCAttributeComponent::GetAttributeComponent(AActor* FromActor)
+{
+	if (FromActor)
+	{
+		return Cast<UCAttributeComponent>(FromActor->GetComponentByClass(UCAttributeComponent::StaticClass()));
+	}
+
+	return nullptr;
+}
 
