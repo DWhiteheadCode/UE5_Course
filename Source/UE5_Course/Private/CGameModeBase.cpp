@@ -56,6 +56,8 @@ void ACGameModeBase::OnBotSpawnQueryFinished(UEnvQueryInstanceBlueprintWrapper* 
 		}
 	}
 
+	UE_LOG(LogTemp, Log, TEXT("Found %i alive bots"), NumOfAliveBots)
+
 	float MaxBots = 10.0f; // Arbitrary default. Will be used if the ensureMsgf() fails
 	if (ensureMsgf(MaxNumMinionsCurve, TEXT("Must set MaxNumMinionsCurve in UE5 GameMode BP")))
 	{
@@ -64,6 +66,7 @@ void ACGameModeBase::OnBotSpawnQueryFinished(UEnvQueryInstanceBlueprintWrapper* 
 
 	if (NumOfAliveBots >= MaxBots)
 	{
+		UE_LOG(LogTemp, Log, TEXT("Max number of bots are alive. Skipping bot spawn."))
 		return;
 	}
 
@@ -75,5 +78,7 @@ void ACGameModeBase::OnBotSpawnQueryFinished(UEnvQueryInstanceBlueprintWrapper* 
 		//FActorSpawnParameters SpawnParams;
 		//SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		GetWorld()->SpawnActor<AActor>(MinionClass, Locations[0], FRotator::ZeroRotator);
+
+		DrawDebugSphere(GetWorld(), Locations[0], 50.0f, 20, FColor::Blue, false, 60.0f);
 	}
 }
