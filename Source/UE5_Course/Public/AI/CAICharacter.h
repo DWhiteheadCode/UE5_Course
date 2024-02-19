@@ -27,6 +27,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UCAttributeComponent* AttributeComp;
 
+	void SetTargetActor(AActor* TargetActor);
+
 	UFUNCTION()
 	void OnPawnSeen(APawn* Pawn);
 

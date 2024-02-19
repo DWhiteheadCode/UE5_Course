@@ -26,33 +26,46 @@ void ACAICharacter::PostInitializeComponents()
     AttributeComp->OnHealthChanged.AddDynamic(this, &ACAICharacter::OnHealthChanged);
 }
 
-void ACAICharacter::OnPawnSeen(APawn* Pawn)
+void ACAICharacter::SetTargetActor(AActor* TargetActor)
 {
     AAIController* AIC = Cast<AAIController>(GetController());
     if (AIC)
     {
-        UBlackboardComponent* BlackboardComp = AIC->GetBlackboardComponent();
-        BlackboardComp->SetValueAsObject("TargetActor", Pawn);
-        //DrawDebugString(GetWorld(), GetActorLocation(), "PLAYER SPOTTED", nullptr, FColor::White, 4.0f, true);
+        // BlackboardComponent should never be deleted while AIC is alive, so no if/ ensure
+        AIC->GetBlackboardComponent()->SetValueAsObject("TargetActor", TargetActor);
     }
+}
+
+void ACAICharacter::OnPawnSeen(APawn* Pawn)
+{
+    SetTargetActor(Pawn);
+    DrawDebugString(GetWorld(), GetActorLocation(), "PLAYER SPOTTED", nullptr, FColor::White, 4.0f, true);
 }
 
 void ACAICharacter::OnHealthChanged(AActor* InstigatorActor, UCAttributeComponent* OwningComp, float NewHealth, float Delta)
 {
-    if (Delta < 0.0f && NewHealth <= 0.0f)
+    if (Delta < 0.0f)
     {
-        // Stop BehaviorTree
-        AAIController* AIC = Cast<AAIController>(GetController());
-        if (AIC)
+        if (InstigatorActor != this)
         {
-            AIC->GetBrainComponent()->StopLogic("Killed");
+            SetTargetActor(InstigatorActor);
         }
 
-        // Ragdoll
-        GetMesh()->SetAllBodiesSimulatePhysics(true);
-        GetMesh()->SetCollisionProfileName("Ragdoll");
+        if (NewHealth <= 0.0f)
+        {
+            // Stop BehaviorTree
+            AAIController* AIC = Cast<AAIController>(GetController());
+            if (AIC)
+            {
+                AIC->GetBrainComponent()->StopLogic("Killed");
+            }
 
-        // Call Destroy() in 5 seconds
-        SetLifeSpan(5.0f);
+            // Ragdoll
+            GetMesh()->SetAllBodiesSimulatePhysics(true);
+            GetMesh()->SetCollisionProfileName("Ragdoll");
+
+            // Call Destroy() in 5 seconds
+            SetLifeSpan(5.0f);
+        }        
     }
 }

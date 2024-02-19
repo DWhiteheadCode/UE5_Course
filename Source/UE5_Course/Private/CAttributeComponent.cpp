@@ -24,13 +24,13 @@ bool UCAttributeComponent::IsFullHealth() const
 
 // Returns true if a change was applied and false otherwise.
 // E.g.: If Delta < 0 && Health == 0, this will return false
-bool UCAttributeComponent::ApplyHealthChange(float Delta)
+bool UCAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delta)
 {
 	float OldHealth = Health;
 	Health = FMath::Clamp( (Health + Delta), 0, HealthMax );
 	float ActualDelta = Health - OldHealth;
 
-	OnHealthChanged.Broadcast( nullptr, this, Health, Delta ); // Note: Will broadcast even if ActualDelta == 0
+	OnHealthChanged.Broadcast( InstigatorActor, this, Health, Delta ); // Note: Will broadcast even if ActualDelta == 0
 
 	return ActualDelta != 0; 
 }

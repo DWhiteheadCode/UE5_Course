@@ -36,7 +36,7 @@ void ACMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent,
 
 		if (AttributeComp) // OtherActor might not have an AttributeComponent, in which case this would be nullptr
 		{
-			AttributeComp->ApplyHealthChange( Damage * -1 ); // Convert damage value into a negative health change
+			AttributeComp->ApplyHealthChange( GetInstigator(), Damage * -1 ); // Convert damage value into a negative health change
 			this->Destroy(); // The projectile has hit something, so it can be destroyed
 		}
 	}

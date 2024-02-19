@@ -29,7 +29,7 @@ EBTNodeResult::Type UCBTTask_SelfHeal::ExecuteTask(UBehaviorTreeComponent& Owner
 
 	float Delta = MyAttributeComp->GetHealthMax() - MyAttributeComp->GetHealth();
 
-	MyAttributeComp->ApplyHealthChange(Delta); // Don't *think* result of health change impacts result of this node
+	MyAttributeComp->ApplyHealthChange(MyPawn, Delta); // Don't *think* result of health change impacts result of this node
 
 	return EBTNodeResult::Succeeded;
 }
