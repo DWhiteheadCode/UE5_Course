@@ -43,20 +43,3 @@ void ACExplosiveBarrel::Explode()
 	RadialForceComp->FireImpulse();
 }
 
-
-
-
-// Called when the game starts or when spawned
-void ACExplosiveBarrel::BeginPlay()
-{
-	Super::BeginPlay();
-	
-}
-
-// Called every frame
-void ACExplosiveBarrel::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-

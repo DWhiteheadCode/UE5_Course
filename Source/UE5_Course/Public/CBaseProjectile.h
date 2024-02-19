@@ -22,9 +22,6 @@ public:
 	ACBaseProjectile();
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
 	virtual void PostInitializeComponents() override;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Effects")
@@ -57,9 +54,5 @@ protected:
 
 	UFUNCTION()
 	virtual void Detonate();
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 
 };

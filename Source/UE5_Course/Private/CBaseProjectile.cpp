@@ -39,19 +39,6 @@ void ACBaseProjectile::PostInitializeComponents()
 	AudioComp->Play();
 }
 
-
-// Called when the game starts or when spawned
-void ACBaseProjectile::BeginPlay()
-{
-	Super::BeginPlay();
-}
-
-// Called every frame
-void ACBaseProjectile::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
-
 void ACBaseProjectile::OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent,
 	FVector NormalImpulse, const FHitResult& Hit)
 {

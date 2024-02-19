@@ -25,20 +25,3 @@ void ACItemChest::Interact_Implementation(APawn* InstigatorPawn)
 {
 	LidMesh->SetRelativeRotation( FRotator( OpenPitch, 0, 0 ) );
 }
-
-
-
-// Called when the game starts or when spawned
-void ACItemChest::BeginPlay()
-{
-	Super::BeginPlay();
-	
-}
-
-// Called every frame
-void ACItemChest::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-
