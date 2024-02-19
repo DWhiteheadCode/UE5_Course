@@ -27,6 +27,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UCAttributeComponent* AttributeComp;
 
+	UPROPERTY(VisibleAnywhere, Category = "Effects")
+	FName TimeOfLastHitParameter;
+
 	void SetTargetActor(AActor* TargetActor);
 
 	UFUNCTION()

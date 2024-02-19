@@ -49,6 +49,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Socket Names")
 	FName LeftHandSocketName;
 
+	// HIT FLASH PARAMETER NAME ---------------------------------
+	UPROPERTY(VisibleAnywhere, Category = "Effects")
+	FName TimeOfLastHitParameterName;
+
 	// INTERACT -------------------------------------------------
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	UInputAction* PrimaryInteractAction;

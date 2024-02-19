@@ -22,23 +22,25 @@ ACCharacter::ACCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	this->SpringArmComp = CreateDefaultSubobject<USpringArmComponent>("Spring Arm");
-	this->CameraComp = CreateDefaultSubobject<UCameraComponent>("Camera Component");
+	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>("Spring Arm");
+	CameraComp = CreateDefaultSubobject<UCameraComponent>("Camera Component");
 
-	this->SpringArmComp->SetupAttachment(RootComponent);
-	this->CameraComp->SetupAttachment(SpringArmComp);
+	SpringArmComp->SetupAttachment(RootComponent);
+	CameraComp->SetupAttachment(SpringArmComp);
 
-	this->SpringArmComp->bUsePawnControlRotation = false;
+	SpringArmComp->bUsePawnControlRotation = false;
 
-	this->InteractionComp = CreateDefaultSubobject<UCInteractionComponent>("Interaction Component");
+	InteractionComp = CreateDefaultSubobject<UCInteractionComponent>("Interaction Component");
 
-	this->AttributeComp = CreateDefaultSubobject<UCAttributeComponent>("Attribute Component");
+	AttributeComp = CreateDefaultSubobject<UCAttributeComponent>("Attribute Component");
 
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;	
 
 	RightHandSocketName = "Muzzle_01";
 	LeftHandSocketName = "Muzzle_02";
+
+	TimeOfLastHitParameterName = "TimeOfLastHit";
 }
 
 void ACCharacter::PostInitializeComponents()
@@ -54,7 +56,7 @@ void ACCharacter::OnHealthChanged(AActor* InstigatorActor, UCAttributeComponent*
 {
 	if (Delta < 0.0f)
 	{
-		GetMesh()->SetScalarParameterValueOnMaterials("TimeOfLastHit", GetWorld()->TimeSeconds);
+		GetMesh()->SetScalarParameterValueOnMaterials(TimeOfLastHitParameterName, GetWorld()->TimeSeconds);
 	}
 
 	// Character has taken damage that drops health to/below 0

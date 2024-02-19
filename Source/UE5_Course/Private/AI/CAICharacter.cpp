@@ -16,6 +16,8 @@ ACAICharacter::ACAICharacter()
     AttributeComp = CreateDefaultSubobject<UCAttributeComponent>("AttributeComp");
 
     AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+
+    TimeOfLastHitParameter = "TimeOfLastHit";
 }
 
 void ACAICharacter::PostInitializeComponents()
@@ -49,7 +51,9 @@ void ACAICharacter::OnHealthChanged(AActor* InstigatorActor, UCAttributeComponen
         if (InstigatorActor != this)
         {
             SetTargetActor(InstigatorActor);
-        }
+        }        
+
+        GetMesh()->SetScalarParameterValueOnMaterials(TimeOfLastHitParameter, GetWorld()->TimeSeconds);
 
         if (NewHealth <= 0.0f)
         {
@@ -66,6 +70,8 @@ void ACAICharacter::OnHealthChanged(AActor* InstigatorActor, UCAttributeComponen
 
             // Call Destroy() in 5 seconds
             SetLifeSpan(5.0f);
-        }        
+        }
     }
+
+    
 }
