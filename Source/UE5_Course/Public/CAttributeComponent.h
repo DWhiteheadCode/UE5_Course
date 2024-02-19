@@ -26,6 +26,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Attributes")
 	static UCAttributeComponent* GetAttributeComponent(AActor* FromActor);
 
+	UFUNCTION(BlueprintCallable, Category = "Attributes", meta = (DisplayName = "IsAlive"))
+	static bool IsActorAlive(AActor* Actor);
+
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes")
 	float Health;

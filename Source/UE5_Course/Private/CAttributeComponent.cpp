@@ -57,3 +57,13 @@ UCAttributeComponent* UCAttributeComponent::GetAttributeComponent(AActor* FromAc
 	return nullptr;
 }
 
+bool UCAttributeComponent::IsActorAlive(AActor* Actor)
+{
+	if (UCAttributeComponent* AttributeComp = GetAttributeComponent(Actor))
+	{
+		return AttributeComp->IsAlive();
+	}
+
+	return false; // Default if Actor is null, or doesn't have AttributeComp
+}
+
