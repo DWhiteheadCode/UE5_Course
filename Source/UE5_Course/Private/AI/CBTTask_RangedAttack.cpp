@@ -30,7 +30,7 @@ EBTNodeResult::Type UCBTTask_RangedAttack::ExecuteTask(UBehaviorTreeComponent& O
 			return EBTNodeResult::Failed;
 		}
 		
-		if (UCAttributeComponent::IsActorAlive(TargetActor))
+		if ( ! UCAttributeComponent::IsActorAlive(TargetActor))
 		{
 			return EBTNodeResult::Failed;
 		}
