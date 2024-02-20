@@ -300,3 +300,8 @@ void ACCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	}
 }
 
+void ACCharacter::HealSelf(float Amount /*Default = 100*/ )
+{
+	AttributeComp->ApplyHealthChange(this, Amount);
+}
+
