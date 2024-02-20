@@ -85,7 +85,7 @@ void ACGameModeBase::OnBotSpawnQueryFinished(UEnvQueryInstanceBlueprintWrapper* 
 	}	
 }
 
-void ACGameModeBase::KillAll()
+void ACGameModeBase::KillAll() // @fixme: Healthbars sometimes remain on screen when this is called
 {
 	for (TActorIterator<ACAICharacter> It(GetWorld()); It; ++It)
 	{
