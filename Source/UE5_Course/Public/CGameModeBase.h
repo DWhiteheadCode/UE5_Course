@@ -22,6 +22,9 @@ public:
 
 	virtual void StartPlay() override;
 
+	UFUNCTION(Exec)
+	void KillAll();
+
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 	UCurveFloat* MaxNumMinionsCurve;

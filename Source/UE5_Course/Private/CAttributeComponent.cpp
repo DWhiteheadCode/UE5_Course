@@ -67,3 +67,8 @@ bool UCAttributeComponent::IsActorAlive(AActor* Actor)
 	return false; // Default if Actor is null, or doesn't have AttributeComp
 }
 
+bool UCAttributeComponent::Kill(AActor* InstigatorActor)
+{
+	return ApplyHealthChange(InstigatorActor, - GetHealthMax());
+}
+

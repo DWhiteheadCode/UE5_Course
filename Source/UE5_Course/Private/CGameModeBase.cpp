@@ -82,5 +82,19 @@ void ACGameModeBase::OnBotSpawnQueryFinished(UEnvQueryInstanceBlueprintWrapper* 
 		GetWorld()->SpawnActor<AActor>(MinionClass, Locations[0], FRotator::ZeroRotator);
 
 		DrawDebugSphere(GetWorld(), Locations[0], 50.0f, 20, FColor::Blue, false, 60.0f);
+	}	
+}
+
+void ACGameModeBase::KillAll()
+{
+	for (TActorIterator<ACAICharacter> It(GetWorld()); It; ++It)
+	{
+		ACAICharacter* Bot = *It;
+
+		UCAttributeComponent* AttributeComp = UCAttributeComponent::GetAttributeComponent(Bot);
+		if (ensure(AttributeComp) && AttributeComp->IsAlive())
+		{
+			AttributeComp->Kill(this);
+		}
 	}
 }
