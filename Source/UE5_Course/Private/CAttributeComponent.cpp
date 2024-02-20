@@ -28,6 +28,12 @@ bool UCAttributeComponent::IsFullHealth() const
 // E.g.: If Delta < 0 && Health == 0, this will return false
 bool UCAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delta)
 {
+	if ( ! GetOwner()->CanBeDamaged() )
+	{
+		return false;
+	}
+
+
 	float OldHealth = Health;
 	Health = FMath::Clamp( (Health + Delta), 0, HealthMax );
 	float ActualDelta = Health - OldHealth;
