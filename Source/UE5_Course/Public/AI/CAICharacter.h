@@ -8,6 +8,8 @@
 
 class UPawnSensingComponent;
 class UCAttributeComponent;
+class UUserWidget;
+class UCWorldUserWidget;
 
 UCLASS()
 class UE5_COURSE_API ACAICharacter : public ACharacter
@@ -29,6 +31,11 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category = "Effects")
 	FName TimeOfLastHitParameter;
+
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSubclassOf<UUserWidget> HealthBarWidgetClass;
+
+	UCWorldUserWidget* ActiveHealthBarWidget;
 
 	void SetTargetActor(AActor* TargetActor);
 

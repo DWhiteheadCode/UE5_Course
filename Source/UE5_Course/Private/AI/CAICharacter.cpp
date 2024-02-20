@@ -8,6 +8,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "CAttributeComponent.h"
 #include "BrainComponent.h"
+#include "CWorldUserWidget.h"
 
 // Sets default values
 ACAICharacter::ACAICharacter()
@@ -54,6 +55,17 @@ void ACAICharacter::OnHealthChanged(AActor* InstigatorActor, UCAttributeComponen
         }        
 
         GetMesh()->SetScalarParameterValueOnMaterials(TimeOfLastHitParameter, GetWorld()->TimeSeconds);
+
+        // Only create a healthbar if one doesn't exist for this minion
+        if (ActiveHealthBarWidget == nullptr) 
+        {
+            ActiveHealthBarWidget = CreateWidget<UCWorldUserWidget>(GetWorld(), HealthBarWidgetClass);
+            if (ActiveHealthBarWidget)
+            {
+                ActiveHealthBarWidget->AttachedActor = this;
+                ActiveHealthBarWidget->AddToViewport();
+            }
+        }        
 
         if (NewHealth <= 0.0f)
         {
