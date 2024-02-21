@@ -25,6 +25,8 @@ public:
 	UFUNCTION(Exec)
 	void KillAll();
 
+	virtual void OnActorKilled(AActor* VictimActor, AActor* KillerActor);
+
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 	UCurveFloat* MaxNumMinionsCurve;
@@ -45,5 +47,8 @@ protected:
 
 	UFUNCTION()
 	void OnBotSpawnQueryFinished(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus);
+
+	UFUNCTION()
+	void RespawnPlayerElapsed(AController* Controller);
 
 };

@@ -3,6 +3,7 @@
 
 #include "CAttributeComponent.h"
 
+#include "CGameModeBase.h"
 
 // Sets default values for this component's properties
 UCAttributeComponent::UCAttributeComponent()
@@ -39,6 +40,16 @@ bool UCAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delt
 	float ActualDelta = Health - OldHealth;
 
 	OnHealthChanged.Broadcast( InstigatorActor, this, Health, Delta ); // Note: Will broadcast even if ActualDelta == 0
+
+	//Died
+	if (ActualDelta < 0.0f && Health == 0.0f)
+	{
+		ACGameModeBase* GM = GetWorld()->GetAuthGameMode<ACGameModeBase>();
+		if (GM)
+		{
+			GM->OnActorKilled(GetOwner(), InstigatorActor);
+		}
+	}
 
 	return ActualDelta != 0; 
 }

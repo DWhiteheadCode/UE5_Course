@@ -85,6 +85,8 @@ void ACGameModeBase::OnBotSpawnQueryFinished(UEnvQueryInstanceBlueprintWrapper* 
 	}	
 }
 
+
+
 void ACGameModeBase::KillAll() // @fixme: Healthbars sometimes remain on screen when this is called
 {
 	for (TActorIterator<ACAICharacter> It(GetWorld()); It; ++It)
@@ -96,5 +98,30 @@ void ACGameModeBase::KillAll() // @fixme: Healthbars sometimes remain on screen 
 		{
 			AttributeComp->Kill(this);
 		}
+	}
+}
+
+void ACGameModeBase::OnActorKilled(AActor* VictimActor, AActor* KillerActor)
+{
+	if ( ACCharacter* Player = Cast<ACCharacter>(VictimActor) )
+	{		
+		FTimerHandle TimerHandle_RespawnDelay; 
+		FTimerDelegate Delegate;
+
+		Delegate.BindUFunction(this, "RespawnPlayerElapsed", Player->GetController());
+
+		float RespawnDelay = 2.0f;
+		GetWorldTimerManager().SetTimer(TimerHandle_RespawnDelay, Delegate, RespawnDelay, false);
+	}
+
+	UE_LOG(LogTemp, Log, TEXT("OnActorKilled: Victim: %s, Killer: %s"), *GetNameSafe(VictimActor), *GetNameSafe(KillerActor));
+}
+
+void ACGameModeBase::RespawnPlayerElapsed(AController* Controller)
+{
+	if (ensure(Controller))
+	{
+		Controller->UnPossess();
+		RestartPlayer(Controller);
 	}
 }
