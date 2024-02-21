@@ -240,6 +240,11 @@ void ACCharacter::PrimaryInteract()
 	}
 }
 
+FVector ACCharacter::GetPawnViewLocation() const
+{
+	return CameraComp->GetComponentLocation();
+}
+
 
 
 

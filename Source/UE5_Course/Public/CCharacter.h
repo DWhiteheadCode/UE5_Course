@@ -59,6 +59,9 @@ protected:
 
 	void PrimaryInteract();
 
+	// EYE LOCATION ---------------------------------------------
+	virtual FVector GetPawnViewLocation() const override;
+
 	// IMC ------------------------------------------------------
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	UInputMappingContext* MovementMappingContext;
