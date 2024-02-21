@@ -8,6 +8,7 @@
 #include "Components/AudioComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
+#include "CGameplayFunctionLibrary.h"
 
 ACMagicProjectile::ACMagicProjectile()
 {
@@ -27,17 +28,9 @@ void ACMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent,
 {
 	if (OtherActor && OtherActor != GetInstigator()) // Make sure an actor was hit
 	{	
-		UGameplayStatics::PlaySoundAtLocation(GetWorld(), ImpactSound, GetActorLocation(), GetActorRotation());
-
-		// Get the AttributeComponent that belongs to OtherActor
-		// GetComponentByClass returns a "UActorComponent*", which we then cast to "UCAttributeComponent"
-		//     GetComponentByClass takes the class of the component we want. This is acquired using the ::StaticClass() method on our class
-		UCAttributeComponent* AttributeComp = UCAttributeComponent::GetAttributeComponent(OtherActor);
-
-		if (AttributeComp) // OtherActor might not have an AttributeComponent, in which case this would be nullptr
+		if (UCGameplayFunctionLibrary::ApplyDirectionalDamage(GetInstigator(), OtherActor, Damage, SweepResult))
 		{
-			AttributeComp->ApplyHealthChange( GetInstigator(), Damage * -1 ); // Convert damage value into a negative health change
-			this->Destroy(); // The projectile has hit something, so it can be destroyed
+			Detonate();
 		}
 	}
 }

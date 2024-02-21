@@ -9,6 +9,8 @@
 #include "CAttributeComponent.h"
 #include "BrainComponent.h"
 #include "CWorldUserWidget.h"
+#include "Components/CapsuleComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 ACAICharacter::ACAICharacter()
@@ -19,6 +21,10 @@ ACAICharacter::ACAICharacter()
     AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
     TimeOfLastHitParameter = "TimeOfLastHit";
+
+    GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Ignore);
+    GetMesh()->SetGenerateOverlapEvents(true);
+
 }
 
 void ACAICharacter::PostInitializeComponents()
@@ -67,6 +73,7 @@ void ACAICharacter::OnHealthChanged(AActor* InstigatorActor, UCAttributeComponen
             }
         }        
 
+        // Died
         if (NewHealth <= 0.0f)
         {
             // Stop BehaviorTree
@@ -79,6 +86,12 @@ void ACAICharacter::OnHealthChanged(AActor* InstigatorActor, UCAttributeComponen
             // Ragdoll
             GetMesh()->SetAllBodiesSimulatePhysics(true);
             GetMesh()->SetCollisionProfileName("Ragdoll");
+
+            // Disable capsule component's collision
+            GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+            // Prevent gravity being applied as there's no longer collision
+            GetCharacterMovement()->DisableMovement(); 
 
             // Call Destroy() in 5 seconds
             SetLifeSpan(5.0f);
