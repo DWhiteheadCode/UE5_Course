@@ -5,8 +5,13 @@
 
 #include "CGameplayInterface.h"
 
+static TAutoConsoleVariable<bool> CVarDrawDebugInteraction(TEXT("c.InteractionDebugDraw"), false, TEXT("Draw debug information for interaction component"), ECVF_Cheat);
+
+
 void UCInteractionComponent::PrimaryInteract()
 {
+	bool bDebugDraw = CVarDrawDebugInteraction.GetValueOnGameThread();
+
 	FCollisionObjectQueryParams Params;
 	Params.AddObjectTypesToQuery(ECC_WorldDynamic); // Check collisions with WorldDynamic objects
 
@@ -34,7 +39,10 @@ void UCInteractionComponent::PrimaryInteract()
 
 	for (FHitResult& HitResult : Hits)
 	{
-		DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, Radius, 32, LineColor, false, 2.0f);
+		if (bDebugDraw)
+		{
+			DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, Radius, 32, LineColor, false, 2.0f);
+		}		
 
 		AActor* HitActor = HitResult.GetActor();
 		if (HitActor)
@@ -48,6 +56,8 @@ void UCInteractionComponent::PrimaryInteract()
 		}		
 	}
 	
-
-	DrawDebugLine(GetWorld(), EyeLocation, End, LineColor, false, 2.0f, 0, 2.0f);
+	if (bDebugDraw)
+	{
+		DrawDebugLine(GetWorld(), EyeLocation, End, LineColor, false, 2.0f, 0, 2.0f);
+	}	
 }
