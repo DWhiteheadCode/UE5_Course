@@ -5,13 +5,15 @@
 
 #include "CGameModeBase.h"
 
+static TAutoConsoleVariable<float> CVarDamageMultiplier(TEXT("c.DamageMulitplier"), true, TEXT("Global damage multiplier for attribute components"), ECVF_Cheat);
+
+
 // Sets default values for this component's properties
 UCAttributeComponent::UCAttributeComponent()
 {
 	Health = 100;
 	HealthMax = 100;
 }
-
 
 
 bool UCAttributeComponent::IsAlive() const
@@ -34,6 +36,10 @@ bool UCAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delt
 		return false;
 	}
 
+	if (Delta < 0.0f) // Check that it was damage and not healing
+	{
+		Delta *= CVarDamageMultiplier.GetValueOnGameThread();
+	}
 
 	float OldHealth = Health;
 	Health = FMath::Clamp( (Health + Delta), 0, HealthMax );
