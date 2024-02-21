@@ -10,6 +10,9 @@
 
 #include "AI/CAICharacter.h"
 #include "CAttributeComponent.h"
+#include "CCharacter.h"
+
+static TAutoConsoleVariable<bool> CVarSpawnBots( TEXT("c.SpawnBots"), true, TEXT("Enable bot spawning via timer"), ECVF_Cheat);
 
 ACGameModeBase::ACGameModeBase()
 {
@@ -25,6 +28,12 @@ void ACGameModeBase::StartPlay()
 
 void ACGameModeBase::BotSpawnTimerElapsed()
 {
+	if ( ! CVarSpawnBots.GetValueOnGameThread() )
+	{
+		UE_LOG(LogTemp, Log, TEXT("Not spawning bot due to 'c.SpawnBots' cvar"));
+		return;
+	}
+
 	// Check the number of Alive bots
 	int32 NumOfAliveBots = 0;
 	for (TActorIterator<ACAICharacter> It(GetWorld()); It; ++It)
