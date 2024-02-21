@@ -31,7 +31,7 @@ bool UCAttributeComponent::IsFullHealth() const
 // E.g.: If Delta < 0 && Health == 0, this will return false
 bool UCAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delta)
 {
-	if ( ! GetOwner()->CanBeDamaged() )
+	if ( ! GetOwner()->CanBeDamaged() && Delta < 0.0f)
 	{
 		return false;
 	}
