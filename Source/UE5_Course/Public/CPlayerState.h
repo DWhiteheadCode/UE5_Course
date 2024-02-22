@@ -34,7 +34,7 @@ public:
 	int GetCredits() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Credits")
-	void UpdateCredits(AActor* InstigatorActor, int Delta);
+	bool UpdateCredits(AActor* InstigatorActor, int Delta);
 
 	UFUNCTION(BlueprintCallable, Category = "Credits")
 	bool SpendCredits(AActor* InstigatorActor, int Amount);
