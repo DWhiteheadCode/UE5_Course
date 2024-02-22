@@ -18,10 +18,10 @@ class UE5_COURSE_API ACHealthPickup : public ACBasePickup
 	void Interact_Implementation(APawn* InstigatorPawn) override;
 
 protected:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Health Pickup")
 	float AmountToHeal;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Health Pickup")
 	int CreditsCost;
 
 };
