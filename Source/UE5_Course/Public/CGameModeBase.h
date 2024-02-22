@@ -53,4 +53,28 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Credits")
 	int CreditsPerKill;
+
+	UFUNCTION(BlueprintCallable, Category = "Pickups")
+	void SpawnPickups();
+
+	UPROPERTY(EditDefaultsOnly, Category = "Pickups")
+	int MaxNumHealthPickups;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Pickups")
+	TSubclassOf<AActor> HealthPickupClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Pickups")
+	int MaxNumCreditsPickups;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Pickups")
+	TSubclassOf<AActor> CreditsPickupClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Pickups")
+	UEnvQuery* SpawnPickupQuery;
+
+	UFUNCTION()
+	void OnHealthPickupSpawnQueryFinished(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus);
+
+	UFUNCTION()
+	void OnCreditsPickupSpawnQueryFinished(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus);
 };

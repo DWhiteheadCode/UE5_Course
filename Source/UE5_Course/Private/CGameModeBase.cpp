@@ -13,12 +13,14 @@
 #include "CCharacter.h"
 #include "CPlayerState.h"
 
-static TAutoConsoleVariable<bool> CVarSpawnBots( TEXT("c.SpawnBots"), true, TEXT("Enable bot spawning via timer"), ECVF_Cheat);
+static TAutoConsoleVariable<bool> CVarSpawnBots( TEXT("c.SpawnBots"), false, TEXT("Enable bot spawning via timer"), ECVF_Cheat);
 
 ACGameModeBase::ACGameModeBase()
 {
 	BotSpawnIntervalSeconds = 2.0f;
 	CreditsPerKill = 100;
+	MaxNumHealthPickups = 5;
+	MaxNumCreditsPickups = 3;
 }
 
 void ACGameModeBase::StartPlay()
@@ -26,6 +28,8 @@ void ACGameModeBase::StartPlay()
 	Super::StartPlay();
 
 	GetWorldTimerManager().SetTimer(TimerHandle_BotSpawn, this, &ACGameModeBase::BotSpawnTimerElapsed, BotSpawnIntervalSeconds, true);
+
+	SpawnPickups();
 }
 
 void ACGameModeBase::BotSpawnTimerElapsed()
@@ -88,8 +92,6 @@ void ACGameModeBase::OnBotSpawnQueryFinished(UEnvQueryInstanceBlueprintWrapper* 
 
 	if (Locations.Num() > 0)
 	{		
-		//FActorSpawnParameters SpawnParams;
-		//SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		GetWorld()->SpawnActor<AActor>(MinionClass, Locations[0], FRotator::ZeroRotator);
 
 		DrawDebugSphere(GetWorld(), Locations[0], 50.0f, 20, FColor::Blue, false, 60.0f);
@@ -145,5 +147,68 @@ void ACGameModeBase::RespawnPlayerTimerElapsed(AController* Controller)
 	{
 		Controller->UnPossess();
 		RestartPlayer(Controller);
+	}
+}
+
+void ACGameModeBase::SpawnPickups()
+{
+	// Spawn Health Pickups
+	for (int i = 0; i < MaxNumHealthPickups; i++)
+	{
+		UEnvQueryInstanceBlueprintWrapper* QueryInstance = UEnvQueryManager::RunEQSQuery(this, SpawnPickupQuery, this, EEnvQueryRunMode::RandomBest25Pct, nullptr);
+
+		// Could be nullptr if SpawnBotQuery wasn't set properly in BP
+		if (ensure(QueryInstance))
+		{
+			// EQS Queries run asynchronously, so to use the result we need to bind to `GetOnQueryFinishedEvent()`
+			QueryInstance->GetOnQueryFinishedEvent().AddDynamic(this, &ACGameModeBase::OnHealthPickupSpawnQueryFinished);
+		}
+	}
+
+	// Spawn Credits Pickups
+	for (int i = 0; i < MaxNumCreditsPickups; i++)
+	{
+		UEnvQueryInstanceBlueprintWrapper* QueryInstance = UEnvQueryManager::RunEQSQuery(this, SpawnPickupQuery, this, EEnvQueryRunMode::RandomBest25Pct, nullptr);
+
+		// Could be nullptr if SpawnBotQuery wasn't set properly in BP
+		if (ensure(QueryInstance))
+		{
+			// EQS Queries run asynchronously, so to use the result we need to bind to `GetOnQueryFinishedEvent()`
+			QueryInstance->GetOnQueryFinishedEvent().AddDynamic(this, &ACGameModeBase::OnCreditsPickupSpawnQueryFinished);
+		}
+	}
+}
+
+void ACGameModeBase::OnHealthPickupSpawnQueryFinished(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus)
+{
+	if (QueryStatus != EEnvQueryStatus::Success)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Spawn Pickup EQS Failed!"));
+		return;
+	}
+
+	TArray<FVector> Locations = QueryInstance->GetResultsAsLocations();
+
+	if (Locations.Num() > 0)
+	{
+		GetWorld()->SpawnActor<AActor>(HealthPickupClass, Locations[0], FRotator::ZeroRotator);
+
+		UE_LOG(LogTemp, Log, TEXT("Spawned HealthPickup"));
+	}
+}
+
+void ACGameModeBase::OnCreditsPickupSpawnQueryFinished(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus)
+{
+	if (QueryStatus != EEnvQueryStatus::Success)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Spawn Credits EQS Failed!"));
+		return;
+	}
+
+	TArray<FVector> Locations = QueryInstance->GetResultsAsLocations();
+
+	if (Locations.Num() > 0)
+	{
+		 GetWorld()->SpawnActor<AActor>(CreditsPickupClass, Locations[0], FRotator::ZeroRotator);
 	}
 }
