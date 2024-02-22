@@ -11,12 +11,14 @@
 #include "AI/CAICharacter.h"
 #include "CAttributeComponent.h"
 #include "CCharacter.h"
+#include "CPlayerState.h"
 
 static TAutoConsoleVariable<bool> CVarSpawnBots( TEXT("c.SpawnBots"), true, TEXT("Enable bot spawning via timer"), ECVF_Cheat);
 
 ACGameModeBase::ACGameModeBase()
 {
 	BotSpawnIntervalSeconds = 2.0f;
+	CreditsPerKill = 100;
 }
 
 void ACGameModeBase::StartPlay()
@@ -112,21 +114,32 @@ void ACGameModeBase::KillAll() // @fixme: Healthbars sometimes remain on screen 
 
 void ACGameModeBase::OnActorKilled(AActor* VictimActor, AActor* KillerActor)
 {
-	if ( ACCharacter* Player = Cast<ACCharacter>(VictimActor) )
+	UE_LOG(LogTemp, Log, TEXT("OnActorKilled: Victim: %s, Killer: %s"), *GetNameSafe(VictimActor), *GetNameSafe(KillerActor));
+
+	// The killer was a player
+	if (ACCharacter* KillerPlayer = Cast<ACCharacter>(KillerActor))
+	{
+		if (ACPlayerState* PlayerState = Cast<ACPlayerState>(KillerPlayer->GetPlayerState()))
+		{
+			// Using Killer as Instigator. Consider using gamemode/ victim? 
+			PlayerState->UpdateCredits(KillerActor, CreditsPerKill);
+		}
+	}
+
+	// The victim was a player
+	if ( ACCharacter* VictimPlayer = Cast<ACCharacter>(VictimActor) )
 	{		
 		FTimerHandle TimerHandle_RespawnDelay; 
 		FTimerDelegate Delegate;
 
-		Delegate.BindUFunction(this, "RespawnPlayerElapsed", Player->GetController());
+		Delegate.BindUFunction(this, "RespawnPlayerTimerElapsed", VictimPlayer->GetController());
 
 		float RespawnDelay = 2.0f;
 		GetWorldTimerManager().SetTimer(TimerHandle_RespawnDelay, Delegate, RespawnDelay, false);
 	}
-
-	UE_LOG(LogTemp, Log, TEXT("OnActorKilled: Victim: %s, Killer: %s"), *GetNameSafe(VictimActor), *GetNameSafe(KillerActor));
 }
 
-void ACGameModeBase::RespawnPlayerElapsed(AController* Controller)
+void ACGameModeBase::RespawnPlayerTimerElapsed(AController* Controller)
 {
 	if (ensure(Controller))
 	{

@@ -7,10 +7,9 @@
 
 bool UCGameplayFunctionLibrary::ApplyDamage(AActor* InstigatorActor, AActor* TargetActor, float DamageAmount)
 {
-	if (ensure(TargetActor))
+	if (TargetActor)
 	{
-		UCAttributeComponent* TargetAttributeComp = UCAttributeComponent::GetAttributeComponent(TargetActor);
-		if (ensureMsgf(TargetAttributeComp, TEXT("ApplyDamage() called on TargetActor '%s', but it didn't have an AttributeComp"), *GetNameSafe(TargetActor)))
+		if (UCAttributeComponent* TargetAttributeComp = UCAttributeComponent::GetAttributeComponent(TargetActor))
 		{
 			return TargetAttributeComp->ApplyHealthChange(InstigatorActor, - DamageAmount);
 		}

@@ -49,6 +49,8 @@ protected:
 	void OnBotSpawnQueryFinished(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus);
 
 	UFUNCTION()
-	void RespawnPlayerElapsed(AController* Controller);
+	void RespawnPlayerTimerElapsed(AController* Controller);
 
+	UPROPERTY(EditDefaultsOnly, Category = "Credits")
+	int CreditsPerKill;
 };
