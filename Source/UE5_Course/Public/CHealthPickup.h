@@ -15,7 +15,7 @@ class UE5_COURSE_API ACHealthPickup : public ACBasePickup
 	
 	ACHealthPickup();
 
-	void Interact_Implementation(APawn* InstigatorPawn);
+	void Interact_Implementation(APawn* InstigatorPawn) override;
 
 protected:
 	UPROPERTY(EditAnywhere)
