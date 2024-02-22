@@ -21,4 +21,7 @@ protected:
 	UPROPERTY(EditAnywhere)
 	float AmountToHeal;
 
+	UPROPERTY(EditAnywhere)
+	int CreditsCost;
+
 };
