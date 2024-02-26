@@ -16,6 +16,7 @@ class UInputAction;
 class UCInteractionComponent;
 class UAnimMontage;
 class UCAttributeComponent;
+class UCActionComponent;
 
 UCLASS()
 class UE5_COURSE_API ACCharacter : public ACharacter
@@ -34,13 +35,14 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UCameraComponent* CameraComp;
 
-	// Interact Component
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UCInteractionComponent* InteractionComp;
 
-	// Attribute Component
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UCAttributeComponent* AttributeComp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UCActionComponent* ActionComp;
 
 	// SOCKET NAMES ---------------------------------------------
 	UPROPERTY(VisibleAnywhere, Category = "Socket Names")
