@@ -44,13 +44,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UCActionComponent* ActionComp;
 
-	// SOCKET NAMES ---------------------------------------------
-	UPROPERTY(VisibleAnywhere, Category = "Socket Names")
-	FName RightHandSocketName;
-
-	UPROPERTY(VisibleAnywhere, Category = "Socket Names")
-	FName LeftHandSocketName;
-
 	// HIT FLASH PARAMETER NAME ---------------------------------
 	UPROPERTY(VisibleAnywhere, Category = "Effects")
 	FName TimeOfLastHitParameterName;
@@ -90,72 +83,42 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	UInputAction* SprintAction;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Actions")
+	FName SprintActionName;
+
 	void SprintStart();
 
 	void SprintStop();
 
-	// GENERIC PROJECTILE ----------------------------------------
-	UFUNCTION()
-	void GetProjectileSpawnRotation(FRotator& Out, const FVector& ProjectileSpawnLocation, float TraceDistance);
-
-
-	// PRIMARY PROJECTILE ---------------------------------------
+	// MAGIC PROJECTILE ---------------------------------------
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-	UInputAction* PrimaryProjectileAction;
-
-	UPROPERTY(EditAnywhere, Category = "PrimaryAttack")
-	TSubclassOf<AActor> PrimaryProjectileClass;
+	UInputAction* MagicProjectileAction;
 	
 	UFUNCTION()
-	void PrimaryAttack_Start();
+	void MagicProjectileAttack_Start();
 
-	UPROPERTY(EditAnywhere, Category = "PrimaryAttack")
-	UAnimMontage* PrimaryAttackAnim;
-
-	UFUNCTION()
-	void PrimaryAttack_FireProjectile();
-
-	FTimerHandle TimerHandle_PrimaryAttack;
-
-	UPROPERTY(EditAnywhere, Category = "PrimaryAttack")
-	UParticleSystem* PrimaryAttackCastHandVFX;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Actions")
+	FName MagicProjectileActionName;
 
 	// BLACKHOLE PROJECTILE --------------------------------------
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	UInputAction* BlackholeProjectileAction;
 
-	UPROPERTY(EditAnywhere, Category = BlackholeAttack)
-	TSubclassOf<AActor> BlackholeProjectileClass;
-
 	UFUNCTION()
 	void BlackholeAttack_Start();
 
-	UPROPERTY(EditAnywhere, Category = BlackholeAttack)
-	UAnimMontage* BlackholeAttackAnim;
-
-	UFUNCTION()
-	void BlackholeAttack_FireProjectile();
-
-	FTimerHandle TimerHandle_BlackholeAttack;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Actions")
+	FName BlackholeProjectileActionName;
 	
 	// TELEPORT PROJECTILE ----------------------------------------
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	UInputAction* TeleportProjectileAction;
 
-	UPROPERTY(EditAnywhere, Category = BlackholeAttack)
-	TSubclassOf<AActor> TeleportProjectileClass;
-
 	UFUNCTION()
 	void TeleportProjectile_Start();
 
-	UPROPERTY(EditAnywhere, Category = BlackholeAttack)
-	UAnimMontage* TeleportProjectileAnim;
-
-	UFUNCTION()
-	void TeleportProjectile_FireProjectile();
-
-	FTimerHandle TimerHandle_TeleportProjectile;
-
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Actions")
+	FName TeleportProjectileActionName;
 
 	// ON HEALTH CHANGED ---------------------------------------------
 	UFUNCTION()

@@ -38,10 +38,47 @@ ACCharacter::ACCharacter()
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;	
 
-	RightHandSocketName = "Muzzle_01";
-	LeftHandSocketName = "Muzzle_02";
-
 	TimeOfLastHitParameterName = "TimeOfLastHit";
+
+	MagicProjectileActionName = "MagicProjectileAttack";
+	BlackholeProjectileActionName = "BlackholeProjectileAttack";
+	TeleportProjectileActionName = "TeleportProjectileAttack";
+	SprintActionName = "Sprint";
+}
+
+void ACCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			Subsystem->AddMappingContext(MovementMappingContext, 0);
+		}
+	}
+}
+
+void ACCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	// -- Rotation Visualization -- //
+	const float DrawScale = 100.0f;
+	const float Thickness = 5.0f;
+
+	FVector LineStart = GetActorLocation();
+	// Offset to the right of pawn
+	LineStart += GetActorRightVector() * 100.0f;
+	// Set line end in direction of the actor's forward
+	FVector ActorDirection_LineEnd = LineStart + (GetActorForwardVector() * 100.0f);
+	// Draw Actor's Direction
+	DrawDebugDirectionalArrow(GetWorld(), LineStart, ActorDirection_LineEnd, DrawScale, FColor::Yellow, false, 0.0f, 0, Thickness);
+
+	FVector ControllerDirection_LineEnd = LineStart + (GetControlRotation().Vector() * 100.0f);
+	// Draw 'Controller' Rotation ('PlayerController' that 'possessed' this character)
+	DrawDebugDirectionalArrow(GetWorld(), LineStart, ControllerDirection_LineEnd, DrawScale, FColor::Blue, false, 0.0f, 0, Thickness);
+
 }
 
 void ACCharacter::PostInitializeComponents()
@@ -60,7 +97,7 @@ void ACCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	{
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ACCharacter::Move);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ACCharacter::Look);
-		EnhancedInputComponent->BindAction(PrimaryProjectileAction, ETriggerEvent::Started, this, &ACCharacter::PrimaryAttack_Start);
+		EnhancedInputComponent->BindAction(MagicProjectileAction, ETriggerEvent::Started, this, &ACCharacter::MagicProjectileAttack_Start);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACCharacter::Jump);
 		EnhancedInputComponent->BindAction(PrimaryInteractAction, ETriggerEvent::Started, this, &ACCharacter::PrimaryInteract);
 		EnhancedInputComponent->BindAction(BlackholeProjectileAction, ETriggerEvent::Started, this, &ACCharacter::BlackholeAttack_Start);
@@ -70,34 +107,10 @@ void ACCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	}
 }
 
-void ACCharacter::SprintStart()
+FVector ACCharacter::GetPawnViewLocation() const
 {
-	ActionComp->StartActionByName(this, "Sprint");
+	return CameraComp->GetComponentLocation();
 }
-
-void ACCharacter::SprintStop()
-{
-	ActionComp->StopActionByName(this, "Sprint");
-}
-
-
-void ACCharacter::OnHealthChanged(AActor* InstigatorActor, UCAttributeComponent* OwningComp, float NewHealth, float Delta)
-{
-	if (Delta < 0.0f)
-	{
-		GetMesh()->SetScalarParameterValueOnMaterials(TimeOfLastHitParameterName, GetWorld()->TimeSeconds);
-	}
-
-	// Character has taken damage that drops health to/below 0
-	if (NewHealth <= 0.0f && Delta < 0.0f)
-	{
-		if ( APlayerController* PC = Cast<APlayerController>(GetController()) )
-		{
-			DisableInput(PC);
-		}
-	}
-}
-
 
 
 void ACCharacter::Move(const FInputActionValue& Value)
@@ -131,136 +144,31 @@ void ACCharacter::Look(const FInputActionValue& Value)
 	}	
 }
 
-
-void ACCharacter::PrimaryAttack_Start()
+void ACCharacter::SprintStart()
 {
-	PlayAnimMontage(PrimaryAttackAnim);
-
-	UGameplayStatics::SpawnEmitterAttached(PrimaryAttackCastHandVFX, GetMesh(), "Muzzle_01");
-
-	float Delay = 0.15f;
-	GetWorldTimerManager().SetTimer( TimerHandle_PrimaryAttack, this, &ACCharacter::PrimaryAttack_FireProjectile, Delay );
+	ActionComp->StartActionByName(this, SprintActionName);
 }
 
-void ACCharacter::PrimaryAttack_FireProjectile()
+void ACCharacter::SprintStop()
 {
-	FVector HandLocation = GetMesh()->GetSocketLocation(RightHandSocketName);
-
-	FRotator ProjectileRotation;
-	float TraceDistance = 10'000.f;
-	GetProjectileSpawnRotation(ProjectileRotation, HandLocation, TraceDistance);
-
-	// Spawn transformation matrix
-	// Spawn the projectile at the character's hand, moving towards the camera's rotation
-	FTransform SpawnTM = FTransform(ProjectileRotation, HandLocation);
-
-	// Struct containing a number of spawn properties
-	// Spawn the Actor, regardless of whether or not it is colliding with something else
-	FActorSpawnParameters SpawnParams;
-	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	SpawnParams.Instigator = this;
-
-	GetWorld()->SpawnActor<AActor>(PrimaryProjectileClass, SpawnTM, SpawnParams);
+	ActionComp->StopActionByName(this, SprintActionName);
 }
 
+void ACCharacter::MagicProjectileAttack_Start()
+{
+	UE_LOG(LogTemp, Log, TEXT("Calling magic projectile action"));
+	ActionComp->StartActionByName(this, MagicProjectileActionName);
+}
 
 void ACCharacter::BlackholeAttack_Start()
 {
-	PlayAnimMontage(BlackholeAttackAnim);
-
-	float Delay = 0.15f;
-	GetWorldTimerManager().SetTimer(TimerHandle_BlackholeAttack, this, &ACCharacter::BlackholeAttack_FireProjectile, Delay);
+	ActionComp->StartActionByName(this, BlackholeProjectileActionName);
 }
-
-void ACCharacter::BlackholeAttack_FireProjectile()
-{
-	FVector HandLocation = GetMesh()->GetSocketLocation(LeftHandSocketName);
-
-	FRotator ProjectileRotation;
-	float TraceDistance = 2500.f;
-	GetProjectileSpawnRotation(ProjectileRotation, HandLocation, TraceDistance);
-
-	// Spawn the projectile at the character's hand, moving towards the camera's rotation
-	FTransform SpawnTM = FTransform(ProjectileRotation, HandLocation);
-
-	// Spawn the Actor, regardless of whether or not it is colliding with something else
-	FActorSpawnParameters SpawnParams;
-	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	SpawnParams.Instigator = this;
-
-	AActor* Blackhole = GetWorld()->SpawnActor<AActor>(BlackholeProjectileClass, SpawnTM, SpawnParams);
-
-}
-
-
-
-
-
-void ACCharacter::GetProjectileSpawnRotation(FRotator& out, const FVector& ProjectileSpawnLocation, float TraceDistance)
-{
-	// Set up line trace params
-	FCollisionObjectQueryParams LineTraceParams;
-	LineTraceParams.AddObjectTypesToQuery(ECC_WorldDynamic);
-	LineTraceParams.AddObjectTypesToQuery(ECC_WorldStatic);
-	LineTraceParams.AddObjectTypesToQuery(ECC_Pawn);
-
-	// Set up line trace end point
-	const FRotator CameraRotation = CameraComp->GetComponentRotation();
-	const FVector CameraLocation = CameraComp->GetComponentLocation();
-
-	FVector TraceEndLocation = CameraLocation + ( CameraRotation.Vector() * TraceDistance );
-
-	// Perform Line Trace
-	FHitResult HitResult;
-	GetWorld()->LineTraceSingleByObjectType( HitResult, CameraLocation, TraceEndLocation, LineTraceParams );
-
-	// Calculate default result (if no hit)
-	out = UKismetMathLibrary::FindLookAtRotation( ProjectileSpawnLocation, TraceEndLocation );
-
-	// Calculate result if there was a hit
-	if ( HitResult.bBlockingHit )
-	{
-		out = UKismetMathLibrary::FindLookAtRotation(ProjectileSpawnLocation, HitResult.ImpactPoint);
-	}
-}
-
 
 void ACCharacter::TeleportProjectile_Start()
 {
-	PlayAnimMontage(TeleportProjectileAnim);
-
-	float Delay = 0.15f;
-	GetWorldTimerManager().SetTimer(TimerHandle_TeleportProjectile, this, &ACCharacter::TeleportProjectile_FireProjectile, Delay);
+	ActionComp->StartActionByName(this, TeleportProjectileActionName);
 }
-
-void ACCharacter::TeleportProjectile_FireProjectile()
-{
-	FVector HandLocation = GetMesh()->GetSocketLocation(RightHandSocketName);
-
-	FRotator ProjectileRotation;
-	float TraceDistance = 1000.f;
-	GetProjectileSpawnRotation(ProjectileRotation, HandLocation, TraceDistance);
-
-	// Spawn the projectile at the character's hand, moving towards the camera's rotation
-	FTransform SpawnTM = FTransform(ProjectileRotation, HandLocation);
-
-	// Spawn the Actor, regardless of whether or not it is colliding with something else
-	FActorSpawnParameters SpawnParams;
-	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	SpawnParams.Instigator = this;
-
-	GetWorld()->SpawnActor<AActor>(TeleportProjectileClass, SpawnTM, SpawnParams);
-}
-
-
-
-
-
-
-
-
-
-
 
 void ACCharacter::PrimaryInteract()
 {
@@ -270,60 +178,25 @@ void ACCharacter::PrimaryInteract()
 	}
 }
 
-FVector ACCharacter::GetPawnViewLocation() const
+
+void ACCharacter::OnHealthChanged(AActor* InstigatorActor, UCAttributeComponent* OwningComp, float NewHealth, float Delta)
 {
-	return CameraComp->GetComponentLocation();
-}
-
-
-
-
-
-// Called when the game starts or when spawned
-void ACCharacter::BeginPlay()
-{
-	Super::BeginPlay();
-	
-	if ( APlayerController* PlayerController = Cast<APlayerController>(GetController()) )
+	if (Delta < 0.0f)
 	{
-		if ( UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()) )
+		GetMesh()->SetScalarParameterValueOnMaterials(TimeOfLastHitParameterName, GetWorld()->TimeSeconds);
+	}
+
+	// Character has taken damage that drops health to/below 0
+	if (NewHealth <= 0.0f && Delta < 0.0f)
+	{
+		if (APlayerController* PC = Cast<APlayerController>(GetController()))
 		{
-			Subsystem->AddMappingContext(MovementMappingContext, 0);
+			DisableInput(PC);
 		}
 	}
 }
-
-// Called every frame
-void ACCharacter::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-	// -- Rotation Visualization -- //
-	const float DrawScale = 100.0f;
-	const float Thickness = 5.0f;
-
-	FVector LineStart = GetActorLocation();
-	// Offset to the right of pawn
-	LineStart += GetActorRightVector() * 100.0f;
-	// Set line end in direction of the actor's forward
-	FVector ActorDirection_LineEnd = LineStart + (GetActorForwardVector() * 100.0f);
-	// Draw Actor's Direction
-	DrawDebugDirectionalArrow(GetWorld(), LineStart, ActorDirection_LineEnd, DrawScale, FColor::Yellow, false, 0.0f, 0, Thickness);
-
-	FVector ControllerDirection_LineEnd = LineStart + (GetControlRotation().Vector() * 100.0f);
-	// Draw 'Controller' Rotation ('PlayerController' that 'possessed' this character)
-	DrawDebugDirectionalArrow(GetWorld(), LineStart, ControllerDirection_LineEnd, DrawScale, FColor::Blue, false, 0.0f, 0, Thickness);
-
-}
-
-
-
-
 
 void ACCharacter::HealSelf(float Amount /*Default = 100*/ )
 {
 	AttributeComp->ApplyHealthChange(this, Amount);
 }
-
-
-

@@ -29,6 +29,9 @@ protected:
 	UPROPERTY()
 	TArray<UCAction*> Actions;
 
+	UPROPERTY(EditAnywhere, Category = "Actions")
+	TArray<TSubclassOf<UCAction>> DefaultActions;
+
 	virtual void BeginPlay() override;
 
 public:	
