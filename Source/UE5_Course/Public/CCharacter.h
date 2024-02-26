@@ -70,6 +70,7 @@ protected:
 
 
 	// MOVEMENT -------------------------------------------------
+	// Strafe movement
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	UInputAction* MoveAction;
 
@@ -79,12 +80,19 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	UInputAction* JumpAction;
 
-
 	// Look
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	UInputAction* LookAction;
 
 	void Look(const FInputActionValue& Value);
+
+	// Sprint
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	UInputAction* SprintAction;
+
+	void SprintStart();
+
+	void SprintStop();
 
 	// GENERIC PROJECTILE ----------------------------------------
 	UFUNCTION()

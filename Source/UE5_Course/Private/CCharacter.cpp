@@ -51,6 +51,34 @@ void ACCharacter::PostInitializeComponents()
 	AttributeComp->OnHealthChanged.AddDynamic(this, &ACCharacter::OnHealthChanged);
 }
 
+// Called to bind functionality to input
+void ACCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
+	{
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ACCharacter::Move);
+		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ACCharacter::Look);
+		EnhancedInputComponent->BindAction(PrimaryProjectileAction, ETriggerEvent::Started, this, &ACCharacter::PrimaryAttack_Start);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACCharacter::Jump);
+		EnhancedInputComponent->BindAction(PrimaryInteractAction, ETriggerEvent::Started, this, &ACCharacter::PrimaryInteract);
+		EnhancedInputComponent->BindAction(BlackholeProjectileAction, ETriggerEvent::Started, this, &ACCharacter::BlackholeAttack_Start);
+		EnhancedInputComponent->BindAction(TeleportProjectileAction, ETriggerEvent::Started, this, &ACCharacter::TeleportProjectile_Start);
+		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this, &ACCharacter::SprintStart);
+		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &ACCharacter::SprintStop);
+	}
+}
+
+void ACCharacter::SprintStart()
+{
+	ActionComp->StartActionByName(this, "Sprint");
+}
+
+void ACCharacter::SprintStop()
+{
+	ActionComp->StopActionByName(this, "Sprint");
+}
 
 
 void ACCharacter::OnHealthChanged(AActor* InstigatorActor, UCAttributeComponent* OwningComp, float NewHealth, float Delta)
@@ -163,6 +191,7 @@ void ACCharacter::BlackholeAttack_FireProjectile()
 	AActor* Blackhole = GetWorld()->SpawnActor<AActor>(BlackholeProjectileClass, SpawnTM, SpawnParams);
 
 }
+
 
 
 
@@ -289,25 +318,12 @@ void ACCharacter::Tick(float DeltaTime)
 
 
 
-// Called to bind functionality to input
-void ACCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
-	{
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ACCharacter::Move);
-		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ACCharacter::Look);
-		EnhancedInputComponent->BindAction(PrimaryProjectileAction, ETriggerEvent::Started, this, &ACCharacter::PrimaryAttack_Start);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACCharacter::Jump);
-		EnhancedInputComponent->BindAction(PrimaryInteractAction, ETriggerEvent::Started, this, &ACCharacter::PrimaryInteract);
-		EnhancedInputComponent->BindAction(BlackholeProjectileAction, ETriggerEvent::Started, this, &ACCharacter::BlackholeAttack_Start);
-		EnhancedInputComponent->BindAction(TeleportProjectileAction, ETriggerEvent::Started, this, &ACCharacter::TeleportProjectile_Start);
-	}
-}
 
 void ACCharacter::HealSelf(float Amount /*Default = 100*/ )
 {
 	AttributeComp->ApplyHealthChange(this, Amount);
 }
+
+
 
