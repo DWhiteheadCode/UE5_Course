@@ -45,7 +45,7 @@ void UCAction_ProjectileAttack::AttackDelay_Elapsed(ACharacter* InstigatorCharac
 
 		// Use sphere of 25 radius for sweep
 		FCollisionShape Shape;
-		float TraceRadius = 25.f;
+		float TraceRadius = 5.f;
 		Shape.SetSphere(TraceRadius);
 
 		FCollisionObjectQueryParams ObjParams;
