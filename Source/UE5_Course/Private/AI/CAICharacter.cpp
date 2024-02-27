@@ -11,12 +11,14 @@
 #include "CWorldUserWidget.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "CActionComponent.h"
 
 // Sets default values
 ACAICharacter::ACAICharacter()
 {
     PawnSensingComp = CreateDefaultSubobject<UPawnSensingComponent>("PawnSensingComp");
     AttributeComp = CreateDefaultSubobject<UCAttributeComponent>("AttributeComp");
+    ActionComp = CreateDefaultSubobject<UCActionComponent>("ActionComp");
 
     AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 

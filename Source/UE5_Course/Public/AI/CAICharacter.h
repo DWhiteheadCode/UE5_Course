@@ -10,6 +10,7 @@ class UPawnSensingComponent;
 class UCAttributeComponent;
 class UUserWidget;
 class UCWorldUserWidget;
+class UCActionComponent;
 
 UCLASS()
 class UE5_COURSE_API ACAICharacter : public ACharacter
@@ -28,6 +29,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UCAttributeComponent* AttributeComp;
+
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UCActionComponent* ActionComp;
 
 	UPROPERTY(VisibleAnywhere, Category = "Effects")
 	FName TimeOfLastHitParameter;
