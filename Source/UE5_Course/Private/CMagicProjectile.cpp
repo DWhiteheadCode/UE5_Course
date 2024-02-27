@@ -9,6 +9,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
 #include "CGameplayFunctionLibrary.h"
+#include "CActionComponent.h"
+#include "GameFramework/ProjectileMovementComponent.h"
 
 ACMagicProjectile::ACMagicProjectile()
 {
@@ -26,8 +28,19 @@ void ACMagicProjectile::PostInitializeComponents()
 void ACMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor && OtherActor != GetInstigator()) // Make sure an actor was hit
+	if (OtherActor && OtherActor != GetInstigator()) 
 	{	
+		// Check if the hit was parried
+		UCActionComponent* ActionComp = Cast<UCActionComponent>(OtherActor->GetComponentByClass(UCActionComponent::StaticClass()));
+		if (ActionComp && ActionComp->ActiveGameplayTags.HasTag(ParryTag)) 
+		{
+			MovementComp->Velocity = -MovementComp->Velocity;
+			SetInstigator(Cast<APawn>(OtherActor));
+
+			return;
+		}
+
+
 		if (UCGameplayFunctionLibrary::ApplyDirectionalDamage(GetInstigator(), OtherActor, Damage, SweepResult))
 		{
 			Detonate();

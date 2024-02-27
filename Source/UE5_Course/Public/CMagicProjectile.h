@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "CBaseProjectile.h"
 
+#include "GameplayTagContainer.h"
+
 #include "CMagicProjectile.generated.h"
 
 class UAudioComponent;
@@ -29,4 +31,6 @@ protected:
 	void OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	UPROPERTY(EditDefaultsOnly, Category = "Parry")
+	FGameplayTag ParryTag;
 };
