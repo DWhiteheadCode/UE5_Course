@@ -120,6 +120,16 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Actions")
 	FName TeleportProjectileActionName;
 
+	// PARRY ---------------------------------------------------------
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	UInputAction* ParryAction;
+
+	UFUNCTION()
+	void Parry_Start();
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Actions")
+	FName ParryActionName;
+
 	// ON HEALTH CHANGED ---------------------------------------------
 	UFUNCTION()
 	void OnHealthChanged(AActor* InstigatorActor, UCAttributeComponent* OwningComp, float NewHealth, float Delta);

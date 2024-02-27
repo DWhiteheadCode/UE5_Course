@@ -44,6 +44,7 @@ ACCharacter::ACCharacter()
 	BlackholeProjectileActionName = "BlackholeProjectileAttack";
 	TeleportProjectileActionName = "TeleportProjectileAttack";
 	SprintActionName = "Sprint";
+	ParryActionName = "Parry";
 }
 
 void ACCharacter::BeginPlay()
@@ -104,6 +105,7 @@ void ACCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 		EnhancedInputComponent->BindAction(TeleportProjectileAction, ETriggerEvent::Started, this, &ACCharacter::TeleportProjectile_Start);
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this, &ACCharacter::SprintStart);
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &ACCharacter::SprintStop);
+		EnhancedInputComponent->BindAction(ParryAction, ETriggerEvent::Started, this, &ACCharacter::Parry_Start);
 	}
 }
 
@@ -178,6 +180,11 @@ void ACCharacter::PrimaryInteract()
 	}
 }
 
+
+void ACCharacter::Parry_Start()
+{
+	ActionComp->StartActionByName(this, ParryActionName);
+}
 
 void ACCharacter::OnHealthChanged(AActor* InstigatorActor, UCAttributeComponent* OwningComp, float NewHealth, float Delta)
 {
