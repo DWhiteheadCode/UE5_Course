@@ -13,25 +13,33 @@ int ACPlayerState::GetCredits() const
 	return Credits;
 }
 
-bool ACPlayerState::UpdateCredits(AActor* InstigatorActor, int Delta)
+void ACPlayerState::AddCredits(int32 Delta)
 {
-	int OldCredits = Credits;
-	Credits = FMath::Max(0, Credits + Delta);
-	int ActualDelta = Credits - OldCredits;
+	if ( ! ensure(Delta > 0.0f))
+	{
+		return;
+	}
 
-	OnCreditsChanged.Broadcast(InstigatorActor, this, Credits, ActualDelta);
+	Credits += Delta;
 
-	return ActualDelta != 0;
+	OnCreditsChanged.Broadcast(this, Credits, Delta);
 }
 
-bool ACPlayerState::SpendCredits(AActor* InstigatorActor, int Amount)
+bool ACPlayerState::SpendCredits(int32 Amount)
 {
+	if ( ! ensure(Amount > 0.0f))
+	{
+		return false;
+	}
+
 	if (Amount > Credits)
 	{
 		return false;
 	}
 
-	UpdateCredits( InstigatorActor, - Amount);
+	Credits -= Amount;
+	
+	OnCreditsChanged.Broadcast(this, Credits, -Amount);
 
 	return true;
 }

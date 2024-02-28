@@ -21,6 +21,8 @@ ACGameModeBase::ACGameModeBase()
 	CreditsPerKill = 100;
 	MaxNumHealthPickups = 5;
 	MaxNumCreditsPickups = 3;
+
+	PlayerStateClass = ACPlayerState::StaticClass();
 }
 
 void ACGameModeBase::StartPlay()
@@ -118,13 +120,12 @@ void ACGameModeBase::OnActorKilled(AActor* VictimActor, AActor* KillerActor)
 {
 	UE_LOG(LogTemp, Log, TEXT("OnActorKilled: Victim: %s, Killer: %s"), *GetNameSafe(VictimActor), *GetNameSafe(KillerActor));
 
-	// The killer was a player
-	if (ACCharacter* KillerPlayer = Cast<ACCharacter>(KillerActor))
+	// Award kill credit if the killer has PlayerState
+	if (APawn* KillerPawn = Cast<APawn>(KillerActor))
 	{
-		if (ACPlayerState* PlayerState = Cast<ACPlayerState>(KillerPlayer->GetPlayerState()))
+		if (ACPlayerState* PlayerState = KillerPawn->GetPlayerState<ACPlayerState>())
 		{
-			// Using Killer as Instigator. Consider using gamemode/ victim? 
-			PlayerState->UpdateCredits(KillerActor, CreditsPerKill);
+			PlayerState->AddCredits(CreditsPerKill);
 		}
 	}
 

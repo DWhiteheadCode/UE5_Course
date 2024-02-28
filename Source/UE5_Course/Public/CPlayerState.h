@@ -7,9 +7,8 @@
 #include "CPlayerState.generated.h"
 
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(
 	FOnCreditsChanged,
-	AActor*, InstigatorActor,
 	ACPlayerState*, OwningComp,
 	int, NewCredits,
 	int, Delta
@@ -31,17 +30,17 @@ public:
 	FOnCreditsChanged OnCreditsChanged;
 
 	UFUNCTION(BlueprintCallable, Category = "Credits")
-	int GetCredits() const;
+	int32 GetCredits() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Credits")
-	bool UpdateCredits(AActor* InstigatorActor, int Delta);
+	void AddCredits(int32 Delta);
 
 	UFUNCTION(BlueprintCallable, Category = "Credits")
-	bool SpendCredits(AActor* InstigatorActor, int Amount);
+	bool SpendCredits(int32 Amount);
 
 
 protected:
 	UPROPERTY(VisibleAnywhere, Category = "Credits")
-	int Credits;
+	int32 Credits;
 
 };

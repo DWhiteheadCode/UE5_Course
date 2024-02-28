@@ -28,7 +28,7 @@ void ACHealthPickup::Interact_Implementation(APawn* InstigatorPawn)
 	UCAttributeComponent* AttributeComp = UCAttributeComponent::GetAttributeComponent(InstigatorPawn);
 	if (ensure(AttributeComp) && !AttributeComp->IsFullHealth())
 	{		
-		if (PlayerState->SpendCredits(InstigatorPawn, CreditsCost)
+		if (PlayerState->SpendCredits(CreditsCost)
 			&& AttributeComp->ApplyHealthChange(this, AmountToHeal)) 
 		{
 			StartCooldown();

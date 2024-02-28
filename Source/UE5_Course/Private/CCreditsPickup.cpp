@@ -23,8 +23,6 @@ void ACCreditsPickup::Interact_Implementation(APawn* InstigatorPawn)
 		return;
 	}
 
-	if (PlayerState->UpdateCredits(InstigatorPawn, CreditsValue))
-	{
-		StartCooldown();
-	}
+	PlayerState->AddCredits(CreditsValue);
+	StartCooldown();
 }
