@@ -45,6 +45,8 @@ ACCharacter::ACCharacter()
 	TeleportProjectileActionName = "TeleportProjectileAttack";
 	SprintActionName = "Sprint";
 	ParryActionName = "Parry";
+
+	BlackholeRageCost = 100;
 }
 
 void ACCharacter::BeginPlay()
@@ -164,7 +166,14 @@ void ACCharacter::MagicProjectileAttack_Start()
 
 void ACCharacter::BlackholeAttack_Start()
 {
-	ActionComp->StartActionByName(this, BlackholeProjectileActionName);
+	if (AttributeComp->SpendRage(this, BlackholeRageCost))
+	{
+		ActionComp->StartActionByName(this, BlackholeProjectileActionName);
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, "Not enough rage to use blackhole");
+	}
 }
 
 void ACCharacter::TeleportProjectile_Start()

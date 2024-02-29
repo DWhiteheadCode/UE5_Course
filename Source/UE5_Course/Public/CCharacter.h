@@ -109,6 +109,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Actions")
 	FName BlackholeProjectileActionName;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Blackhole")
+	float BlackholeRageCost;
 	
 	// TELEPORT PROJECTILE ----------------------------------------
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")

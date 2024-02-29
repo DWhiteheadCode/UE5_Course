@@ -16,7 +16,7 @@ UCAttributeComponent::UCAttributeComponent()
 
 	Rage = 0;
 	RageMax = 250;
-	RageConversionAmount = 0.2f;
+	RageConversionAmount = 2.f;
 }
 
 // HEALTH ----------------------------------------------------------------------------
@@ -120,6 +120,23 @@ bool UCAttributeComponent::ApplyRageChange(AActor* InstigatorActor, float Delta)
 	OnRageChanged.Broadcast(InstigatorActor, this, Rage, ActualDelta); 
 
 	return ActualDelta != 0;
+}
+
+bool UCAttributeComponent::SpendRage(AActor* InstigatorActor, float Amount)
+{
+	if (! ensure(Amount > 0.0f))
+	{
+		return false;
+	}
+
+	if (Amount > Rage)
+	{
+		return false;
+	}
+
+	ApplyRageChange(InstigatorActor, - Amount);
+
+	return true;
 }
 
 // MISC ----------------------------------------------------------------------------

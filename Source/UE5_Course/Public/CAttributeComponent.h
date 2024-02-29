@@ -96,4 +96,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Attributes")
 	bool ApplyRageChange(AActor* InstigatorActor, float Delta);
 
+	UFUNCTION(BlueprintCallable, Category = "Attributes")
+	bool SpendRage(AActor* InstigatorActor, float Amount);
+
 };
