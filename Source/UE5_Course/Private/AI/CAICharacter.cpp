@@ -24,9 +24,10 @@ ACAICharacter::ACAICharacter()
 
     TimeOfLastHitParameter = "TimeOfLastHit";
 
+    PlayerSpottedWidgetDuration = 1.5f;
+
     GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Ignore);
     GetMesh()->SetGenerateOverlapEvents(true);
-
 }
 
 void ACAICharacter::PostInitializeComponents()
@@ -49,8 +50,42 @@ void ACAICharacter::SetTargetActor(AActor* TargetActor)
 
 void ACAICharacter::OnPawnSeen(APawn* Pawn)
 {
+    if (AAIController* AIC = Cast<AAIController>(GetController()))
+    {
+        AActor* TargetActor = Cast<AActor>(AIC->GetBlackboardComponent()->GetValueAsObject("TargetActor"));
+
+        if (Pawn != TargetActor) // TargetActor can be null
+        {
+            if (ensure(PlayerSpottedWidgetClass) && PlayerSpottedWidgetInstance == nullptr)
+            {
+                PlayerSpottedWidgetInstance = CreateWidget<UCWorldUserWidget>(GetWorld(), PlayerSpottedWidgetClass);
+            }
+
+            if (ensure(PlayerSpottedWidgetInstance))
+            {
+                PlayerSpottedWidgetInstance->AttachedActor = this;
+
+                if (!PlayerSpottedWidgetInstance->IsInViewport())
+                {
+                    PlayerSpottedWidgetInstance->AddToViewport();
+                }
+
+                GetWorldTimerManager().ClearTimer(TimerHandle_PlayerSpottedWidget);
+                GetWorldTimerManager().SetTimer(TimerHandle_PlayerSpottedWidget, this, &ACAICharacter::RemovePlayerSpottedWidget, PlayerSpottedWidgetDuration, false);
+            }            
+        }
+    }
+
     SetTargetActor(Pawn);
-    DrawDebugString(GetWorld(), GetActorLocation(), "PLAYER SPOTTED", nullptr, FColor::White, 4.0f, true);
+    //DrawDebugString(GetWorld(), GetActorLocation(), "PLAYER SPOTTED", nullptr, FColor::White, 4.0f, true);
+}
+
+void ACAICharacter::RemovePlayerSpottedWidget()
+{
+    if (ensure(PlayerSpottedWidgetInstance))
+    {
+        PlayerSpottedWidgetInstance->RemoveFromParent();
+    }
 }
 
 void ACAICharacter::OnHealthChanged(AActor* InstigatorActor, UCAttributeComponent* OwningComp, float NewHealth, float Delta)
@@ -102,3 +137,5 @@ void ACAICharacter::OnHealthChanged(AActor* InstigatorActor, UCAttributeComponen
 
     
 }
+
+

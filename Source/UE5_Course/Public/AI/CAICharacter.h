@@ -49,4 +49,21 @@ protected:
 	UFUNCTION()
 	void OnHealthChanged(AActor* InstigatorActor, UCAttributeComponent* OwningComp, float NewHealth, float Delta);
 
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSubclassOf<UCWorldUserWidget> PlayerSpottedWidgetClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	float PlayerSpottedWidgetDuration;
+
+	FTimerHandle TimerHandle_PlayerSpottedWidget;
+
+	UPROPERTY()
+	UCWorldUserWidget* PlayerSpottedWidgetInstance;
+
+	UFUNCTION()
+	void RemovePlayerSpottedWidget();
+	
+
+
+
 };
