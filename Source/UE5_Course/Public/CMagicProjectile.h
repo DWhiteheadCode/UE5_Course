@@ -12,6 +12,7 @@
 
 class UAudioComponent;
 class USoundCue;
+class UCActionEffect;
 
 UCLASS()
 class UE5_COURSE_API ACMagicProjectile : public ACBaseProjectile
@@ -24,13 +25,16 @@ public:
 	void PostInitializeComponents() override;
 
 protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	float Damage;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Damage")
+	float DamageAmount;
 
 	UFUNCTION()
 	void OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	UPROPERTY(EditDefaultsOnly, Category = "Parry")
+	UPROPERTY(EditDefaultsOnly, Category = "Damage")
 	FGameplayTag ParryTag;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Damage")
+	TSubclassOf<UCActionEffect> BurningActionClass;
 };

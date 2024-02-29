@@ -20,13 +20,16 @@ public:
 	UCActionComponent();
 
 	UFUNCTION(BlueprintCallable, Category = "Actions")
-	void AddAction(TSubclassOf<UCAction> ActionClass);
+	void AddAction(TSubclassOf<UCAction> ActionClass, AActor* Instigator);
 
 	UFUNCTION(BlueprintCallable, Category = "Actions")
 	bool StartActionByName(AActor* Instigator, FName ActionName);
 
 	UFUNCTION(BlueprintCallable, Category = "Actions")
 	bool StopActionByName(AActor* Instigator, FName ActionName);
+
+	UFUNCTION(BlueprintCallable, Category = "Actions")
+	void RemoveAction(UCAction* ActionToRemove);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tags")
 	FGameplayTagContainer ActiveGameplayTags;

@@ -11,10 +11,11 @@
 #include "CGameplayFunctionLibrary.h"
 #include "CActionComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "CActionEffect.h"
 
 ACMagicProjectile::ACMagicProjectile()
 {
-	Damage = 20.0f;
+	DamageAmount = 20.0f;
 }
 
 void ACMagicProjectile::PostInitializeComponents()
@@ -41,9 +42,14 @@ void ACMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent,
 		}
 
 
-		if (UCGameplayFunctionLibrary::ApplyDirectionalDamage(GetInstigator(), OtherActor, Damage, SweepResult))
+		if (UCGameplayFunctionLibrary::ApplyDirectionalDamage(GetInstigator(), OtherActor, DamageAmount, SweepResult))
 		{
 			Detonate();
+
+			if (ActionComp)
+			{
+				ActionComp->AddAction( BurningActionClass, GetInstigator() );
+			}
 		}
 	}
 }
