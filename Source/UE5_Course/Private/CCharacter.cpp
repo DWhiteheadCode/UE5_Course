@@ -186,15 +186,18 @@ void ACCharacter::Parry_Start()
 	ActionComp->StartActionByName(this, ParryActionName);
 }
 
-void ACCharacter::OnHealthChanged(AActor* InstigatorActor, UCAttributeComponent* OwningComp, float NewHealth, float Delta)
+void ACCharacter::OnHealthChanged(AActor* InstigatorActor, UCAttributeComponent* OwningComp, float NewHealth, float ActualDelta)
 {
-	if (Delta < 0.0f)
+	if (ActualDelta < 0.0f)
 	{
 		GetMesh()->SetScalarParameterValueOnMaterials(TimeOfLastHitParameterName, GetWorld()->TimeSeconds);
+
+		float RageAmount = OwningComp->GetRageFromDamage( - ActualDelta);
+		OwningComp->ApplyRageChange(InstigatorActor, RageAmount);
 	}
 
 	// Character has taken damage that drops health to/below 0
-	if (NewHealth <= 0.0f && Delta < 0.0f)
+	if (NewHealth <= 0.0f && ActualDelta < 0.0f)
 	{
 		if (APlayerController* PC = Cast<APlayerController>(GetController()))
 		{

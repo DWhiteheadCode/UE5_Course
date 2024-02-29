@@ -14,6 +14,14 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(
 	float, Delta
 );
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(
+	FOnRageChanged,
+	AActor*, InstigatorActor,
+	UCAttributeComponent*, OwningComp,
+	float, NewRage,
+	float, ActualDelta
+);
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class UE5_COURSE_API UCAttributeComponent : public UActorComponent
 {
@@ -26,12 +34,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Attributes")
 	static UCAttributeComponent* GetAttributeComponent(AActor* FromActor);
 
-	UFUNCTION(BlueprintCallable, Category = "Attributes", meta = (DisplayName = "IsAlive"))
-	static bool IsActorAlive(AActor* Actor);
-
-	UFUNCTION(BlueprintCallable)
-	bool Kill(AActor* InstigatorActor);
-
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes")
 	float Health;
@@ -39,8 +41,21 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes")
 	float HealthMax;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes")
+	float Rage;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes")
+	float RageMax;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes")
+	float RageConversionAmount;
+
 
 public:	
+	// HEALTH -----------------------------------------------------------------
+	UPROPERTY(BlueprintAssignable)
+	FOnHealthChanged OnHealthChanged;
+	
 	UFUNCTION(BlueprintCallable, Category = "Attributes")
 	bool IsAlive() const;
 
@@ -54,9 +69,31 @@ public:
 	float GetHealth() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Attributes")
-	bool IsFullHealth() const;
+	bool IsFullHealth() const;	
 
+	UFUNCTION(BlueprintCallable, Category = "Attributes", meta = (DisplayName = "IsAlive"))
+	static bool IsActorAlive(AActor* Actor);
+
+	UFUNCTION(BlueprintCallable)
+	bool Kill(AActor* InstigatorActor);
+
+	// RAGE -------------------------------------------------------------------
 	UPROPERTY(BlueprintAssignable)
-	FOnHealthChanged OnHealthChanged;
+	FOnRageChanged OnRageChanged;
 	
+	UFUNCTION(BlueprintCallable, Category = "Attributes")
+	float GetRageMax() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Attributes")
+	float GetRage() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Attributes")
+	bool IsFullRage() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Attributes")
+	float GetRageFromDamage(float Damage) const;
+
+	UFUNCTION(BlueprintCallable, Category = "Attributes")
+	bool ApplyRageChange(AActor* InstigatorActor, float Delta);
+
 };

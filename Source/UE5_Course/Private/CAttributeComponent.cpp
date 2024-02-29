@@ -13,8 +13,13 @@ UCAttributeComponent::UCAttributeComponent()
 {
 	Health = 100;
 	HealthMax = 100;
+
+	Rage = 0;
+	RageMax = 250;
+	RageConversionAmount = 0.2f;
 }
 
+// HEALTH ----------------------------------------------------------------------------
 
 bool UCAttributeComponent::IsAlive() const
 {
@@ -25,7 +30,6 @@ bool UCAttributeComponent::IsFullHealth() const
 {
 	return (Health == HealthMax);
 }
-
 
 // Returns true if a change was applied and false otherwise.
 // E.g.: If Delta < 0 && Health == 0, this will return false
@@ -45,7 +49,7 @@ bool UCAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delt
 	Health = FMath::Clamp( (Health + Delta), 0, HealthMax );
 	float ActualDelta = Health - OldHealth;
 
-	OnHealthChanged.Broadcast( InstigatorActor, this, Health, Delta ); // Note: Will broadcast even if ActualDelta == 0
+	OnHealthChanged.Broadcast( InstigatorActor, this, Health, ActualDelta ); // Note: Will broadcast even if ActualDelta == 0
 
 	//Died
 	if (ActualDelta < 0.0f && Health == 0.0f)
@@ -70,16 +74,6 @@ float UCAttributeComponent::GetHealth() const
 	return Health;
 }
 
-UCAttributeComponent* UCAttributeComponent::GetAttributeComponent(AActor* FromActor)
-{
-	if (FromActor)
-	{
-		return FromActor->FindComponentByClass<UCAttributeComponent>();
-	}
-
-	return nullptr;
-}
-
 bool UCAttributeComponent::IsActorAlive(AActor* Actor)
 {
 	if (UCAttributeComponent* AttributeComp = GetAttributeComponent(Actor))
@@ -92,6 +86,49 @@ bool UCAttributeComponent::IsActorAlive(AActor* Actor)
 
 bool UCAttributeComponent::Kill(AActor* InstigatorActor)
 {
-	return ApplyHealthChange(InstigatorActor, - GetHealthMax());
+	return ApplyHealthChange(InstigatorActor, -GetHealthMax());
 }
 
+
+// RAGE ---------------------------------------------------------------------------
+float UCAttributeComponent::GetRageMax() const
+{
+	return RageMax;
+}
+
+float UCAttributeComponent::GetRage() const
+{
+	return Rage;
+}
+
+bool UCAttributeComponent::IsFullRage() const
+{
+	return Rage == RageMax;
+}
+
+float UCAttributeComponent::GetRageFromDamage(float Damage) const
+{
+	return Damage *= RageConversionAmount;
+}
+
+bool UCAttributeComponent::ApplyRageChange(AActor* InstigatorActor, float Delta)
+{
+	float OldRage = Rage;
+	Rage = FMath::Clamp((Rage + Delta), 0, RageMax);
+	float ActualDelta = Rage - OldRage;
+
+	OnRageChanged.Broadcast(InstigatorActor, this, Rage, ActualDelta); 
+
+	return ActualDelta != 0;
+}
+
+// MISC ----------------------------------------------------------------------------
+UCAttributeComponent* UCAttributeComponent::GetAttributeComponent(AActor* FromActor)
+{
+	if (FromActor)
+	{
+		return FromActor->FindComponentByClass<UCAttributeComponent>();
+	}
+
+	return nullptr;
+}
