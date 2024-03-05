@@ -23,11 +23,16 @@ public:
 	UPROPERTY(EditAnywhere)
 	float OpenPitch;
 
-
 	// Sets default values for this actor's properties
 	ACItemChest();
 
 protected:
+	UPROPERTY(ReplicatedUsing="OnRep_LidMoved")
+	bool bLidOpened;
+
+	UFUNCTION()
+	void OnRep_LidMoved();
+
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* BaseMesh;
 

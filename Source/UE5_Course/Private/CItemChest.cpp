@@ -4,6 +4,7 @@
 #include "CItemChest.h"
 
 #include "Components/StaticMeshComponent.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 ACItemChest::ACItemChest()
@@ -18,10 +19,27 @@ ACItemChest::ACItemChest()
 	LidMesh->SetupAttachment(BaseMesh);
 
 	OpenPitch = 110.f;
+
+	bReplicates = true;
+}
+
+void ACItemChest::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ACItemChest, bLidOpened);
 }
 
 
 void ACItemChest::Interact_Implementation(APawn* InstigatorPawn)
 {
-	LidMesh->SetRelativeRotation( FRotator( OpenPitch, 0, 0 ) );
+	bLidOpened = !bLidOpened;
+
+	OnRep_LidMoved();
+}
+
+void ACItemChest::OnRep_LidMoved()
+{
+	float NewPitch = bLidOpened ? OpenPitch : 0.0f;
+	LidMesh->SetRelativeRotation(FRotator(NewPitch, 0, 0));
 }

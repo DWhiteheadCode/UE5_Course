@@ -21,6 +21,9 @@ public:
 	void PrimaryInteract();
 
 protected:
+	UFUNCTION(Server, Reliable)
+	void ServerInteract(AActor* InFocusedActor);
+
 	void FindBestInteractable();
 
 	UPROPERTY() // UPROPERTY for garbage collection/ dangling pointer resolution
