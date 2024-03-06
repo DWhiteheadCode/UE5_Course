@@ -14,7 +14,7 @@ class UE5_COURSE_API UCWorldUserWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(BlueprintReadOnly, Category = "UI")
+	UPROPERTY(BlueprintReadWrite, Category = "UI", meta = (ExposeOnSpawn=true))
 	AActor* AttachedActor;
 
 	UPROPERTY(EditAnywhere, Category = "UI")
