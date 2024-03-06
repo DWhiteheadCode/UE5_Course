@@ -29,6 +29,8 @@ ACBaseProjectile::ACBaseProjectile()
 
 	AudioComp = CreateDefaultSubobject<UAudioComponent>("AudioComp");
 	AudioComp->SetupAttachment(RootComponent);
+
+	bReplicates = true;
 }
 
 void ACBaseProjectile::PostInitializeComponents()
