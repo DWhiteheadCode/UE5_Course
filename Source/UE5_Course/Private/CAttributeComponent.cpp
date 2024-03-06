@@ -22,8 +22,9 @@ UCAttributeComponent::UCAttributeComponent()
 	SetIsReplicatedByDefault(true);
 }
 
-// HEALTH ----------------------------------------------------------------------------
 
+
+// HEALTH ----------------------------------------------------------------------------
 bool UCAttributeComponent::IsAlive() const
 {
 	return Health > 0.0f;
@@ -52,7 +53,10 @@ bool UCAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delt
 	Health = FMath::Clamp( (Health + Delta), 0, HealthMax );
 	float ActualDelta = Health - OldHealth;
 
-	OnHealthChanged.Broadcast( InstigatorActor, this, Health, ActualDelta ); // Note: Will broadcast even if ActualDelta == 0
+	if (ActualDelta != 0.0f)
+	{
+		MulticastHealthChanged(InstigatorActor, Health, ActualDelta);
+	}
 
 	//Died
 	if (ActualDelta < 0.0f && Health == 0.0f)
@@ -92,6 +96,11 @@ bool UCAttributeComponent::Kill(AActor* InstigatorActor)
 	return ApplyHealthChange(InstigatorActor, -GetHealthMax());
 }
 
+void UCAttributeComponent::MulticastHealthChanged_Implementation(AActor* InstigatorActor, float NewHealth, float ActualDelta)
+{
+	OnHealthChanged.Broadcast(InstigatorActor, this, NewHealth, ActualDelta);
+}
+
 
 // RAGE ---------------------------------------------------------------------------
 float UCAttributeComponent::GetRageMax() const
@@ -120,7 +129,10 @@ bool UCAttributeComponent::ApplyRageChange(AActor* InstigatorActor, float Delta)
 	Rage = FMath::Clamp((Rage + Delta), 0, RageMax);
 	float ActualDelta = Rage - OldRage;
 
-	OnRageChanged.Broadcast(InstigatorActor, this, Rage, ActualDelta); 
+	if (ActualDelta != 0)
+	{
+		MulticastRageChanged(InstigatorActor, Rage, ActualDelta);
+	}	
 
 	return ActualDelta != 0;
 }
@@ -140,6 +152,11 @@ bool UCAttributeComponent::SpendRage(AActor* InstigatorActor, float Amount)
 	ApplyRageChange(InstigatorActor, - Amount);
 
 	return true;
+}
+
+void UCAttributeComponent::MulticastRageChanged_Implementation(AActor* InstigatorActor, float NewHealth, float ActualDelta)
+{
+	OnRageChanged.Broadcast(InstigatorActor, this, NewHealth, ActualDelta);
 }
 
 // MISC ----------------------------------------------------------------------------

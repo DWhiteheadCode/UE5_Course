@@ -50,6 +50,11 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Replicated, Category = "Attributes")
 	float RageConversionAmount;
 
+	UFUNCTION(NetMulticast, Reliable) // TODO make unreliable after removing death logic from player
+	void MulticastHealthChanged(AActor* InstigatorActor, float NewHealth, float ActualDelta);
+
+	UFUNCTION(NetMulticast, Unreliable) 
+	void MulticastRageChanged(AActor* InstigatorActor, float NewHealth, float ActualDelta);
 
 public:	
 	// HEALTH -----------------------------------------------------------------
