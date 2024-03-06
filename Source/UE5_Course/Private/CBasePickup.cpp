@@ -19,6 +19,8 @@ ACBasePickup::ACBasePickup()
 	MeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	CooldownTime = 10;
+
+	bReplicates = true;
 }
 
 
