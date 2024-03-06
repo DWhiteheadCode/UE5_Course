@@ -4,6 +4,7 @@
 #include "CAttributeComponent.h"
 
 #include "CGameModeBase.h"
+#include "Net/UnrealNetwork.h"
 
 static TAutoConsoleVariable<float> CVarDamageMultiplier(TEXT("c.DamageMulitplier"), true, TEXT("Global damage multiplier for attribute components"), ECVF_Cheat);
 
@@ -17,6 +18,8 @@ UCAttributeComponent::UCAttributeComponent()
 	Rage = 0;
 	RageMax = 250;
 	RageConversionAmount = 2.f;
+
+	SetIsReplicatedByDefault(true);
 }
 
 // HEALTH ----------------------------------------------------------------------------
@@ -148,4 +151,15 @@ UCAttributeComponent* UCAttributeComponent::GetAttributeComponent(AActor* FromAc
 	}
 
 	return nullptr;
+}
+
+void UCAttributeComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(UCAttributeComponent, Health);
+	DOREPLIFETIME(UCAttributeComponent, HealthMax);
+	DOREPLIFETIME(UCAttributeComponent, Rage);
+	DOREPLIFETIME(UCAttributeComponent, RageMax);
+	DOREPLIFETIME(UCAttributeComponent, RageConversionAmount);
 }
