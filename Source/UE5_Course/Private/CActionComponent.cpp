@@ -8,6 +8,7 @@
 UCActionComponent::UCActionComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
+	SetIsReplicatedByDefault(true);
 }
 
 void UCActionComponent::BeginPlay()
@@ -19,6 +20,8 @@ void UCActionComponent::BeginPlay()
 		AddAction(ActionClass, GetOwner());
 	}
 }
+
+
 
 
 void UCActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -56,18 +59,30 @@ bool UCActionComponent::StartActionByName(AActor* Instigator, FName ActionName)
 		{
 			if ( ! Action->CanStart(Instigator))
 			{
-				FString FailedMsg = FString::Printf(TEXT("Failed to run: %s"), *ActionName.ToString());
+				FString FailedMsg = FString::Printf(TEXT("Couldn't start: %s"), *ActionName.ToString());
 				GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FailedMsg);
 
 				continue; // Might have multiple actions with the same name?
 			}
 
-			Action->StartAction(Instigator);
+			// If this is running on a client
+			if (!GetOwner()->HasAuthority())
+			{
+				// Tell the server to start the action in its version of this component
+				ServerStartActionByName(Instigator, ActionName);
+			}
+
+			Action->StartAction(Instigator); // Start this action locally
 			return true;
 		}
 	}
 
 	return false;
+}
+
+void UCActionComponent::ServerStartActionByName_Implementation(AActor* Instigator, FName ActionName)
+{
+	StartActionByName(Instigator, ActionName);
 }
 
 bool UCActionComponent::StopActionByName(AActor* Instigator, FName ActionName)
