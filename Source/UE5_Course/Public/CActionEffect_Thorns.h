@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "CActionEffect.h"
-#include "CThornsEffect.generated.h"
+#include "CActionEffect_Thorns.generated.h"
 
 class UCAttributeComponent;
 
@@ -12,12 +12,12 @@ class UCAttributeComponent;
  * 
  */
 UCLASS()
-class UE5_COURSE_API UCThornsEffect : public UCActionEffect
+class UE5_COURSE_API UCActionEffect_Thorns : public UCActionEffect
 {
 	GENERATED_BODY()
 	
 public:
-	UCThornsEffect();
+	UCActionEffect_Thorns();
 
 	void StartAction_Implementation(AActor* Instigator) override;
 
