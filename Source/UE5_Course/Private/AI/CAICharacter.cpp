@@ -30,6 +30,8 @@ ACAICharacter::ACAICharacter()
     GetMesh()->SetGenerateOverlapEvents(true);
 }
 
+
+
 void ACAICharacter::PostInitializeComponents()
 {
     Super::PostInitializeComponents();
@@ -48,35 +50,43 @@ void ACAICharacter::SetTargetActor(AActor* TargetActor)
     }
 }
 
-void ACAICharacter::OnPawnSeen(APawn* Pawn)
+AActor* ACAICharacter::GetTargetActor() const
 {
-    if (AAIController* AIC = Cast<AAIController>(GetController()))
+    AAIController* AIC = Cast<AAIController>(GetController());
+    if (AIC)
     {
-        AActor* TargetActor = Cast<AActor>(AIC->GetBlackboardComponent()->GetValueAsObject("TargetActor"));
-
-        if (Pawn != TargetActor) // TargetActor can be null
-        {
-            if (ensure(PlayerSpottedWidgetClass) && PlayerSpottedWidgetInstance == nullptr)
-            {
-                PlayerSpottedWidgetInstance = CreateWidget<UCWorldUserWidget>(GetWorld(), PlayerSpottedWidgetClass);
-            }
-
-            if (ensure(PlayerSpottedWidgetInstance))
-            {
-                PlayerSpottedWidgetInstance->AttachedActor = this;
-
-                if (!PlayerSpottedWidgetInstance->IsInViewport())
-                {
-                    PlayerSpottedWidgetInstance->AddToViewport();
-                }
-
-                GetWorldTimerManager().ClearTimer(TimerHandle_PlayerSpottedWidget);
-                GetWorldTimerManager().SetTimer(TimerHandle_PlayerSpottedWidget, this, &ACAICharacter::RemovePlayerSpottedWidget, PlayerSpottedWidgetDuration, false);
-            }            
-        }
+        return Cast<AActor>(AIC->GetBlackboardComponent()->GetValueAsObject("TargetActor"));
     }
 
-    SetTargetActor(Pawn);
+    return nullptr;
+}
+
+void ACAICharacter::OnPawnSeen(APawn* Pawn)
+{
+    if (GetTargetActor() != Pawn)
+    {
+        SetTargetActor(Pawn);
+
+
+        if (ensure(PlayerSpottedWidgetClass) && PlayerSpottedWidgetInstance == nullptr)
+        {
+            PlayerSpottedWidgetInstance = CreateWidget<UCWorldUserWidget>(GetWorld(), PlayerSpottedWidgetClass);
+        }
+
+        if (ensure(PlayerSpottedWidgetInstance))
+        {
+            PlayerSpottedWidgetInstance->AttachedActor = this;
+
+            if (!PlayerSpottedWidgetInstance->IsInViewport())
+            {
+                PlayerSpottedWidgetInstance->AddToViewport();
+            }
+
+            GetWorldTimerManager().ClearTimer(TimerHandle_PlayerSpottedWidget);
+            GetWorldTimerManager().SetTimer(TimerHandle_PlayerSpottedWidget, this, &ACAICharacter::RemovePlayerSpottedWidget, PlayerSpottedWidgetDuration, false);
+        }        
+    }
+
     //DrawDebugString(GetWorld(), GetActorLocation(), "PLAYER SPOTTED", nullptr, FColor::White, 4.0f, true);
 }
 

@@ -21,6 +21,8 @@ public:
 	// Sets default values for this character's properties
 	ACAICharacter();
 
+	AActor* GetTargetActor() const;
+
 protected:
 	void PostInitializeComponents() override;
 
