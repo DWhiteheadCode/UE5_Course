@@ -7,20 +7,13 @@
 #include "CAttributeComponent.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(
-	FOnHealthChanged,
+	FOnAttributeChanged,
 	AActor*, InstigatorActor,
 	UCAttributeComponent*, OwningComp,
-	float, NewHealth,
+	float, NewValue,
 	float, Delta
 );
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(
-	FOnRageChanged,
-	AActor*, InstigatorActor,
-	UCAttributeComponent*, OwningComp,
-	float, NewRage,
-	float, ActualDelta
-);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class UE5_COURSE_API UCAttributeComponent : public UActorComponent
@@ -59,7 +52,7 @@ protected:
 public:	
 	// HEALTH -----------------------------------------------------------------
 	UPROPERTY(BlueprintAssignable)
-	FOnHealthChanged OnHealthChanged;
+	FOnAttributeChanged OnHealthChanged;
 	
 	UFUNCTION(BlueprintCallable, Category = "Attributes")
 	bool IsAlive() const;
@@ -84,7 +77,7 @@ public:
 
 	// RAGE -------------------------------------------------------------------
 	UPROPERTY(BlueprintAssignable)
-	FOnRageChanged OnRageChanged;
+	FOnAttributeChanged OnRageChanged;
 	
 	UFUNCTION(BlueprintCallable, Category = "Attributes")
 	float GetRageMax() const;
