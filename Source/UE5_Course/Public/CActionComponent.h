@@ -34,6 +34,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tags")
 	FGameplayTagContainer ActiveGameplayTags;
 
+	UFUNCTION(BlueprintCallable, Category = "Actions")
+	bool HasAction(TSubclassOf<UCAction> ActionClass);
+
 protected:
 	UPROPERTY()
 	TArray<UCAction*> Actions;

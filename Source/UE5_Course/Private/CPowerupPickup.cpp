@@ -7,7 +7,7 @@
 
 void ACPowerupPickup::Interact_Implementation(APawn* InstigatorPawn)
 {
-	if (!ensure(InstigatorPawn))
+	if (!ensure(InstigatorPawn && ActionToGrant))
 	{
 		return;
 	}
@@ -16,6 +16,14 @@ void ACPowerupPickup::Interact_Implementation(APawn* InstigatorPawn)
 
 	if (ensure(ActionComp))
 	{
+		if (ActionComp->HasAction( ActionToGrant ))
+		{
+			FString DebugMsg = FString::Printf(TEXT("Action '%s' is already known."), *GetNameSafe(ActionToGrant));
+			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, DebugMsg);
+
+			return;
+		}
+
 		ActionComp->AddAction(ActionToGrant, this);
 		StartCooldown();
 	}

@@ -96,3 +96,16 @@ void UCActionComponent::RemoveAction(UCAction* ActionToRemove)
 
 	Actions.Remove(ActionToRemove);
 }
+
+bool UCActionComponent::HasAction(TSubclassOf<UCAction> ActionClass)
+{
+	for (UCAction* Action : Actions)
+	{
+		if (Action && Action->IsA(ActionClass))
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
