@@ -5,6 +5,8 @@
 
 #include "CAction.h"
 #include "../UE5_Course.h"
+#include "Net/UnrealNetwork.h"
+#include "Engine/ActorChannel.h"
 
 UCActionComponent::UCActionComponent()
 {
@@ -16,10 +18,13 @@ void UCActionComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	for (TSubclassOf<UCAction> ActionClass : DefaultActions)
+	if (GetOwner()->HasAuthority())
 	{
-		AddAction(ActionClass, GetOwner());
-	}
+		for (TSubclassOf<UCAction> ActionClass : DefaultActions)
+		{
+			AddAction(ActionClass, GetOwner());
+		}
+	}	
 }
 
 
@@ -40,7 +45,7 @@ void UCActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 			*GetNameSafe(GetOwner()),
 			*Action->ActionName.ToString(),
 			Action->IsRunning() ? TEXT("true") : TEXT("false"),
-			*GetNameSafe(GetOuter()));
+			*GetNameSafe(Action->GetOuter()));
 
 		LogOnScreen(this, ActionMsg, TextColor, 0.0f);
 	}
@@ -138,4 +143,25 @@ bool UCActionComponent::HasAction(TSubclassOf<UCAction> ActionClass)
 	}
 
 	return false;
+}
+
+bool UCActionComponent::ReplicateSubobjects(UActorChannel* Channel, FOutBunch* Bunch, FReplicationFlags* RepFlags)
+{
+	bool WroteSomething = Super::ReplicateSubobjects(Channel, Bunch, RepFlags);
+	for (UCAction* Action : Actions)
+	{
+		if (Action)
+		{
+			WroteSomething |= Channel->ReplicateSubobject(Action, *Bunch, *RepFlags);
+		}
+	}
+
+	return WroteSomething;
+}
+
+void UCActionComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(UCActionComponent, Actions);
 }

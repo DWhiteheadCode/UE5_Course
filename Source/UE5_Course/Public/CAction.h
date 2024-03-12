@@ -41,6 +41,11 @@ public:
 
 	UWorld* GetWorld() const override;
 
+	bool IsSupportedForNetworking() const override
+	{
+		return true;
+	}
+
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Tags")
 	FGameplayTagContainer GrantsTags;
@@ -51,6 +56,10 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Action")
 	UCActionComponent* GetOwningComponent() const;
 
+	UPROPERTY(ReplicatedUsing="OnRep_IsRunning")
 	bool bIsRunning;
+
+	UFUNCTION()
+	void OnRep_IsRunning();
 
 };

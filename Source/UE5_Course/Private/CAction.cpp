@@ -5,6 +5,7 @@
 
 #include "CActionComponent.h"
 #include "../UE5_Course.h"
+#include "Net/UnrealNetwork.h"
 
 void UCAction::StartAction_Implementation(AActor* Instigator)
 {
@@ -23,7 +24,7 @@ void UCAction::StopAction_Implementation(AActor* Instigator)
 	//UE_LOG(LogTemp, Log, TEXT("Stopped Action: %s"), *GetNameSafe(this));
 	LogOnScreen(this, FString::Printf(TEXT("Stopped: %s"), *ActionName.ToString()), FColor::White);
 
-	ensureAlways(bIsRunning);
+	//ensureAlways(bIsRunning);
 
 	UCActionComponent* ActionComp = GetOwningComponent();
 	ActionComp->ActiveGameplayTags.RemoveTags(GrantsTags);
@@ -67,7 +68,26 @@ UCActionComponent* UCAction::GetOwningComponent() const
 	return Cast<UCActionComponent>(GetOuter());
 }
 
+void UCAction::OnRep_IsRunning()
+{
+	if (bIsRunning)
+	{
+		StartAction(nullptr);
+	}
+	else
+	{
+		StopAction(nullptr);
+	}
+}
+
 bool UCAction::IsRunning() const
 {
 	return bIsRunning;
+}
+
+void UCAction::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(UCAction, bIsRunning);
 }

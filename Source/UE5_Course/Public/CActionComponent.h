@@ -37,8 +37,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Actions")
 	bool HasAction(TSubclassOf<UCAction> ActionClass);
 
+	bool ReplicateSubobjects(class UActorChannel* Channel, class FOutBunch* Bunch, FReplicationFlags* RepFlags) override;
+
 protected:
-	UPROPERTY()
+	UPROPERTY(Replicated)
 	TArray<UCAction*> Actions;
 
 	UPROPERTY(EditAnywhere, Category = "Actions")
