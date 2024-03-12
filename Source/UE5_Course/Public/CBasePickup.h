@@ -42,4 +42,11 @@ protected:
 	UFUNCTION()
 	void OnCooldownEnd();
 
+	// NETWORKING --------------------------------------------
+	UPROPERTY(ReplicatedUsing="OnRep_StateChanged")
+	bool bIsOnCooldown;
+
+	UFUNCTION()
+	void OnRep_StateChanged();
+
 };
