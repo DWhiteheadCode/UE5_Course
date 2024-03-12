@@ -35,24 +35,24 @@ void ACBasePickup::Interact_Implementation(APawn* InstigatorPawn)
 void ACBasePickup::StartCooldown()
 {
 	bIsOnCooldown = true;
-	OnRep_StateChanged();
+	OnRep_CooldownStateChanged();
 }
 
 void ACBasePickup::OnCooldownEnd()
 {	
 	bIsOnCooldown = false;
-	OnRep_StateChanged();
+	OnRep_CooldownStateChanged();
 }
 
-void ACBasePickup::OnRep_StateChanged()
+void ACBasePickup::OnRep_CooldownStateChanged()
 {
-	if (bIsOnCooldown)
+	if (bIsOnCooldown) // Start Cooldown
 	{
 		MeshComp->SetVisibility(false, true);
 		GetWorldTimerManager().SetTimer(TimerHandle_PickupCooldown, this, &ACBasePickup::OnCooldownEnd, CooldownTime);
 		SetActorEnableCollision(false);
 	}
-	else
+	else // End Cooldown
 	{
 		MeshComp->SetVisibility(true, true);
 		SetActorEnableCollision(true);

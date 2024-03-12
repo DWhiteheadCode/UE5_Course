@@ -43,10 +43,10 @@ protected:
 	void OnCooldownEnd();
 
 	// NETWORKING --------------------------------------------
-	UPROPERTY(ReplicatedUsing="OnRep_StateChanged")
+	UPROPERTY(ReplicatedUsing="OnRep_CooldownStateChanged")
 	bool bIsOnCooldown;
 
 	UFUNCTION()
-	void OnRep_StateChanged();
+	void OnRep_CooldownStateChanged();
 
 };
