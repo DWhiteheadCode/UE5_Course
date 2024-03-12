@@ -67,27 +67,31 @@ void ACAICharacter::OnPawnSeen(APawn* Pawn)
     {
         SetTargetActor(Pawn);
 
-
-        if (ensure(PlayerSpottedWidgetClass) && PlayerSpottedWidgetInstance == nullptr)
-        {
-            PlayerSpottedWidgetInstance = CreateWidget<UCWorldUserWidget>(GetWorld(), PlayerSpottedWidgetClass);
-        }
-
-        if (ensure(PlayerSpottedWidgetInstance))
-        {
-            PlayerSpottedWidgetInstance->AttachedActor = this;
-
-            if (!PlayerSpottedWidgetInstance->IsInViewport())
-            {
-                PlayerSpottedWidgetInstance->AddToViewport();
-            }
-
-            GetWorldTimerManager().ClearTimer(TimerHandle_PlayerSpottedWidget);
-            GetWorldTimerManager().SetTimer(TimerHandle_PlayerSpottedWidget, this, &ACAICharacter::RemovePlayerSpottedWidget, PlayerSpottedWidgetDuration, false);
-        }        
+        MulticastPlayerSpotted();
     }
 
     //DrawDebugString(GetWorld(), GetActorLocation(), "PLAYER SPOTTED", nullptr, FColor::White, 4.0f, true);
+}
+
+void ACAICharacter::MulticastPlayerSpotted_Implementation()
+{
+    if (ensure(PlayerSpottedWidgetClass) && PlayerSpottedWidgetInstance == nullptr)
+    {
+        PlayerSpottedWidgetInstance = CreateWidget<UCWorldUserWidget>(GetWorld(), PlayerSpottedWidgetClass);
+    }
+
+    if (ensure(PlayerSpottedWidgetInstance))
+    {
+        PlayerSpottedWidgetInstance->AttachedActor = this;
+
+        if (!PlayerSpottedWidgetInstance->IsInViewport())
+        {
+            PlayerSpottedWidgetInstance->AddToViewport();
+        }
+
+        GetWorldTimerManager().ClearTimer(TimerHandle_PlayerSpottedWidget);
+        GetWorldTimerManager().SetTimer(TimerHandle_PlayerSpottedWidget, this, &ACAICharacter::RemovePlayerSpottedWidget, PlayerSpottedWidgetDuration, false);
+    }
 }
 
 void ACAICharacter::RemovePlayerSpottedWidget()
@@ -97,6 +101,8 @@ void ACAICharacter::RemovePlayerSpottedWidget()
         PlayerSpottedWidgetInstance->RemoveFromParent();
     }
 }
+
+
 
 void ACAICharacter::OnHealthChanged(AActor* InstigatorActor, UCAttributeComponent* OwningComp, float NewHealth, float Delta)
 {

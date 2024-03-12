@@ -65,6 +65,8 @@ protected:
 	UFUNCTION()
 	void RemovePlayerSpottedWidget();
 	
+	UFUNCTION(NetMulticast, Unreliable)
+	void MulticastPlayerSpotted();
 
 
 
