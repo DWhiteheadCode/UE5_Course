@@ -203,6 +203,8 @@ void ACCharacter::OnHealthChanged(AActor* InstigatorActor, UCAttributeComponent*
 		{
 			DisableInput(PC);
 		}
+
+		SetLifeSpan(4.0f);
 	}
 }
 
