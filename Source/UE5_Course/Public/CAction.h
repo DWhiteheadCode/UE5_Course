@@ -12,9 +12,21 @@
 class UWorld;
 class UCActionComponent;
 
-/**
- * 
- */
+
+USTRUCT()
+struct FActionRepData
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY()
+	bool bIsRunning;
+
+	UPROPERTY()
+	AActor* Instigator;
+};
+
+
 UCLASS(Blueprintable)
 class UE5_COURSE_API UCAction : public UObject
 {
@@ -56,10 +68,10 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Action")
 	UCActionComponent* GetOwningComponent() const;
 
-	UPROPERTY(ReplicatedUsing="OnRep_IsRunning")
-	bool bIsRunning;
+	UPROPERTY(ReplicatedUsing="OnRep_RepData")
+	FActionRepData RepData;
 
 	UFUNCTION()
-	void OnRep_IsRunning();
+	void OnRep_RepData();
 
 };
