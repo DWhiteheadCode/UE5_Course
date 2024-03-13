@@ -30,6 +30,8 @@ void UCActionComponent::BeginPlay()
 
 
 
+
+
 void UCActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
@@ -117,6 +119,12 @@ bool UCActionComponent::StopActionByName(AActor* Instigator, FName ActionName)
 		{
 			if (Action->IsRunning())
 			{
+				if (!GetOwner()->HasAuthority())
+				{
+					// Tell the server to stop the action in its version of this component
+					ServerStopActionByName(Instigator, ActionName);
+				}
+
 				Action->StopAction(Instigator);
 				return true;
 			}			
@@ -124,6 +132,11 @@ bool UCActionComponent::StopActionByName(AActor* Instigator, FName ActionName)
 	}
 
 	return false;
+}
+
+void UCActionComponent::ServerStopActionByName_Implementation(AActor* Instigator, FName ActionName)
+{
+	StopActionByName(Instigator, ActionName);
 }
 
 void UCActionComponent::RemoveAction(UCAction* ActionToRemove)
