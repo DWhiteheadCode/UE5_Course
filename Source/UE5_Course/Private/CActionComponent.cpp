@@ -57,6 +57,12 @@ void UCActionComponent::AddAction(TSubclassOf<UCAction> ActionClass, AActor* Ins
 		return;
 	}
 
+	if (!GetOwner()->HasAuthority())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Client attempted to AddAction to ActionComponent. [Class: %s]"), *GetNameSafe(ActionClass));
+		return;
+	}
+
 	UCAction* NewAction = NewObject<UCAction>(this, ActionClass);
 	if (ensure(NewAction))
 	{
@@ -124,6 +130,12 @@ void UCActionComponent::RemoveAction(UCAction* ActionToRemove)
 {
 	if ( ! ensure(ActionToRemove && !ActionToRemove->IsRunning()) )
 	{
+		return;
+	}
+
+	if (!GetOwner()->HasAuthority())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Client attempted to RemoveAction to ActionComponent. [Action: %s]"), *GetNameSafe(ActionToRemove));
 		return;
 	}
 
