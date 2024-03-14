@@ -4,6 +4,7 @@
 #include "CPlayerState.h"
 
 #include "Net/UnrealNetwork.h"
+#include "CSaveGame.h"
 
 ACPlayerState::ACPlayerState()
 {
@@ -68,4 +69,20 @@ void ACPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLif
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(ACPlayerState, Credits);
+}
+
+void ACPlayerState::SavePlayerState_Implementation(UCSaveGame* SaveObject)
+{
+	if (SaveObject)
+	{
+		SaveObject->Credits = Credits;
+	}
+}
+
+void ACPlayerState::LoadPlayerState_Implementation(UCSaveGame* SaveObject)
+{
+	if (SaveObject)
+	{
+		Credits = SaveObject->Credits;
+	}
 }

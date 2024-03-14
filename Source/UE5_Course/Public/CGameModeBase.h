@@ -11,6 +11,7 @@
 class UEnvQuery;
 class UEnvQueryInstanceBlueprintWrapper;
 class UCurveFloat;
+class UCSaveGame;
 
 UCLASS()
 class UE5_COURSE_API ACGameModeBase : public AGameModeBase
@@ -27,7 +28,21 @@ public:
 
 	virtual void OnActorKilled(AActor* VictimActor, AActor* KillerActor);
 
+	UFUNCTION(BlueprintCallable, Category = "SaveGame")
+	void WriteSaveGame();
+
+	void LoadSaveGame();
+
+	void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
+
+	void HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer) override;
+
 protected:
+	UPROPERTY()
+	UCSaveGame* CurrentSaveGame;
+
+	FString SlotName;
+
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 	UCurveFloat* MaxNumMinionsCurve;
 

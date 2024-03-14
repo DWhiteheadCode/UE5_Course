@@ -14,6 +14,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(
 	int, Delta
 );
 
+class UCSaveGame;
 
 /**
  * 
@@ -37,6 +38,12 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Credits")
 	bool SpendCredits(int32 Amount);
+
+	UFUNCTION(BlueprintNativeEvent)
+	void SavePlayerState(UCSaveGame* SaveObject);
+
+	UFUNCTION(BlueprintNativeEvent)
+	void LoadPlayerState(UCSaveGame* SaveObject);
 
 
 protected:

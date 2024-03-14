@@ -12,6 +12,9 @@
 #include "CAttributeComponent.h"
 #include "CCharacter.h"
 #include "CPlayerState.h"
+#include "Kismet/GameplayStatics.h"
+#include "CSaveGame.h"
+#include "GameFramework/GameStateBase.h"
 
 static TAutoConsoleVariable<bool> CVarSpawnBots( TEXT("c.SpawnBots"), false, TEXT("Enable bot spawning via timer"), ECVF_Cheat);
 
@@ -23,7 +26,27 @@ ACGameModeBase::ACGameModeBase()
 	MaxNumCreditsPickups = 3;
 
 	PlayerStateClass = ACPlayerState::StaticClass();
+
+	SlotName = "SaveGame01";
 }
+
+void ACGameModeBase::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)
+{
+	Super::InitGame(MapName, Options, ErrorMessage);
+
+	LoadSaveGame();
+}
+
+void ACGameModeBase::HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer)
+{
+	Super::HandleStartingNewPlayer_Implementation(NewPlayer);
+
+	if (ACPlayerState* PlayerState = NewPlayer->GetPlayerState<ACPlayerState>())
+	{
+		PlayerState->LoadPlayerState(CurrentSaveGame);
+	}
+}
+
 
 void ACGameModeBase::StartPlay()
 {
@@ -213,3 +236,43 @@ void ACGameModeBase::OnCreditsPickupSpawnQueryFinished(UEnvQueryInstanceBlueprin
 		 GetWorld()->SpawnActor<AActor>(CreditsPickupClass, Locations[0], FRotator::ZeroRotator);
 	}
 }
+
+void ACGameModeBase::WriteSaveGame()
+{
+	// Should add ensure() for CurrentSaveGame? 
+
+	for (int32 i = 0; i < GameState->PlayerArray.Num(); i++)
+	{
+		ACPlayerState* PlayerState = Cast<ACPlayerState>(GameState->PlayerArray[i]);
+		if (PlayerState)
+		{
+			PlayerState->SavePlayerState(CurrentSaveGame);
+			break; // Single player only
+		}
+	}
+
+	
+	UGameplayStatics::SaveGameToSlot(CurrentSaveGame, SlotName, 0);
+}
+
+void ACGameModeBase::LoadSaveGame()
+{
+	if (UGameplayStatics::DoesSaveGameExist(SlotName, 0))
+	{
+		CurrentSaveGame = Cast<UCSaveGame>(UGameplayStatics::LoadGameFromSlot(SlotName, 0));
+		if (CurrentSaveGame == nullptr)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Failed to load SaveGame data"));
+			return;
+		}
+
+		UE_LOG(LogTemp, Log, TEXT("Successfully loaded SaveGame data"));
+	}
+	else
+	{
+		CurrentSaveGame = Cast<UCSaveGame>(UGameplayStatics::CreateSaveGameObject(UCSaveGame::StaticClass()));
+		UE_LOG(LogTemp, Log, TEXT("Created new SaveGame data"));
+	}
+}
+
+
