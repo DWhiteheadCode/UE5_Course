@@ -83,6 +83,6 @@ void ACPlayerState::LoadPlayerState_Implementation(UCSaveGame* SaveObject)
 {
 	if (SaveObject)
 	{
-		Credits = SaveObject->Credits;
+		AddCredits(SaveObject->Credits);
 	}
 }
