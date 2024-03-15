@@ -16,6 +16,7 @@
 #include "CSaveGame.h"
 #include "GameFramework/GameStateBase.h"
 #include "CGameplayInterface.h"
+#include "Serialization/ObjectAndNameAsStringProxyArchive.h"
 
 static TAutoConsoleVariable<bool> CVarSpawnBots( TEXT("c.SpawnBots"), false, TEXT("Enable bot spawning via timer"), ECVF_Cheat);
 
@@ -262,6 +263,14 @@ void ACGameModeBase::WriteSaveGame()
 		ActorData.Name = Actor->GetName();
 		ActorData.Transform = Actor->GetTransform();
 
+
+		FMemoryWriter MemWriter(ActorData.ByteData);
+		FObjectAndNameAsStringProxyArchive Archive(MemWriter, true);
+		Archive.ArIsSaveGame = true; // Only serialize variables marked with UPROPERTY(SaveGame)
+
+		Actor->Serialize(Archive);
+
+
 		CurrentSaveGame->SavedActors.Add(ActorData);
 	}
 
@@ -296,6 +305,17 @@ void ACGameModeBase::LoadSaveGame()
 				if (LoadedActorData.Name == Actor->GetName())
 				{
 					Actor->SetActorTransform( LoadedActorData.Transform );
+
+					// Read data from ByteData into Archive
+					FMemoryReader MemReader(LoadedActorData.ByteData);
+					FObjectAndNameAsStringProxyArchive Archive(MemReader, true);
+					Archive.ArIsSaveGame = true; 
+
+					// Load data from the archive into this actor
+					Actor->Serialize(Archive);
+
+					ICGameplayInterface::Execute_OnActorLoaded(Actor);
+
 					break;
 				}
 			}
