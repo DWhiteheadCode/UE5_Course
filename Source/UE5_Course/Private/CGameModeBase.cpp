@@ -15,6 +15,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "CSaveGame.h"
 #include "GameFramework/GameStateBase.h"
+#include "CGameplayInterface.h"
 
 static TAutoConsoleVariable<bool> CVarSpawnBots( TEXT("c.SpawnBots"), false, TEXT("Enable bot spawning via timer"), ECVF_Cheat);
 
@@ -28,13 +29,6 @@ ACGameModeBase::ACGameModeBase()
 	PlayerStateClass = ACPlayerState::StaticClass();
 
 	SlotName = "SaveGame01";
-}
-
-void ACGameModeBase::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)
-{
-	Super::InitGame(MapName, Options, ErrorMessage);
-
-	LoadSaveGame();
 }
 
 void ACGameModeBase::HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer)
@@ -51,6 +45,8 @@ void ACGameModeBase::HandleStartingNewPlayer_Implementation(APlayerController* N
 void ACGameModeBase::StartPlay()
 {
 	Super::StartPlay();
+
+	LoadSaveGame();
 
 	GetWorldTimerManager().SetTimer(TimerHandle_BotSpawn, this, &ACGameModeBase::BotSpawnTimerElapsed, BotSpawnIntervalSeconds, true);
 
@@ -238,9 +234,9 @@ void ACGameModeBase::OnCreditsPickupSpawnQueryFinished(UEnvQueryInstanceBlueprin
 }
 
 void ACGameModeBase::WriteSaveGame()
-{
-	// Should add ensure() for CurrentSaveGame? 
+{   // Should add ensure() for CurrentSaveGame? 
 
+	// Save Player States
 	for (int32 i = 0; i < GameState->PlayerArray.Num(); i++)
 	{
 		ACPlayerState* PlayerState = Cast<ACPlayerState>(GameState->PlayerArray[i]);
@@ -251,8 +247,27 @@ void ACGameModeBase::WriteSaveGame()
 		}
 	}
 
+	// Save World Actors
+	CurrentSaveGame->SavedActors.Empty(); // Clear value from previous load
+
+	for (FActorIterator It(GetWorld()); It; ++It)
+	{
+		AActor* Actor = *It;
+		if ( ! Actor->Implements<UCGameplayInterface>())
+		{
+			continue;
+		}
+
+		FActorSaveData ActorData;
+		ActorData.Name = Actor->GetName();
+		ActorData.Transform = Actor->GetTransform();
+
+		CurrentSaveGame->SavedActors.Add(ActorData);
+	}
+
 	
 	UGameplayStatics::SaveGameToSlot(CurrentSaveGame, SlotName, 0);
+	UE_LOG(LogTemp, Log, TEXT("Saved SaveGame"));
 }
 
 void ACGameModeBase::LoadSaveGame()
@@ -267,6 +282,24 @@ void ACGameModeBase::LoadSaveGame()
 		}
 
 		UE_LOG(LogTemp, Log, TEXT("Successfully loaded SaveGame data"));
+
+		for (FActorIterator It(GetWorld()); It; ++It)
+		{			
+			AActor* Actor = *It;
+			if (!Actor->Implements<UCGameplayInterface>())
+			{
+				continue;
+			}
+
+			for (FActorSaveData LoadedActorData : CurrentSaveGame->SavedActors)
+			{
+				if (LoadedActorData.Name == Actor->GetName())
+				{
+					Actor->SetActorTransform( LoadedActorData.Transform );
+					break;
+				}
+			}
+		}
 	}
 	else
 	{

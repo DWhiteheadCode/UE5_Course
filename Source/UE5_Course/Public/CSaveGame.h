@@ -6,6 +6,20 @@
 #include "GameFramework/SaveGame.h"
 #include "CSaveGame.generated.h"
 
+USTRUCT()
+struct FActorSaveData
+{
+	GENERATED_BODY()
+
+public:
+	// Identifier for which actor this belongs to
+	UPROPERTY()
+	FString Name;
+
+	UPROPERTY()
+	FTransform Transform;
+};
+
 /**
  * 
  */
@@ -17,4 +31,8 @@ class UE5_COURSE_API UCSaveGame : public USaveGame
 public:
 	UPROPERTY()
 	int32 Credits;
+
+	UPROPERTY()
+	TArray<FActorSaveData> SavedActors;
+
 };
