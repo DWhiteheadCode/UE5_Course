@@ -21,6 +21,8 @@ ACItemChest::ACItemChest()
 	OpenPitch = 110.f;
 
 	bReplicates = true;
+	SetReplicateMovement(true);
+	BaseMesh->SetIsReplicated(true);
 }
 
 void ACItemChest::OnActorLoaded_Implementation()
