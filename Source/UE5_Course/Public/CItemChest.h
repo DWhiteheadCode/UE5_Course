@@ -16,18 +16,18 @@ class UE5_COURSE_API ACItemChest : public AActor, public ICGameplayInterface
 {
 	GENERATED_BODY()
 	
-	void Interact_Implementation(APawn* InstigatorPawn);
-
 public:	
+	ACItemChest();
+
+	void OnActorLoaded_Implementation() override;
+
+	void Interact_Implementation(APawn* InstigatorPawn) override;
 
 	UPROPERTY(EditAnywhere)
 	float OpenPitch;
 
-	// Sets default values for this actor's properties
-	ACItemChest();
-
 protected:
-	UPROPERTY(ReplicatedUsing="OnRep_LidMoved")
+	UPROPERTY(ReplicatedUsing="OnRep_LidMoved", BlueprintReadOnly, SaveGame)
 	bool bLidOpened;
 
 	UFUNCTION()
@@ -38,5 +38,8 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UStaticMeshComponent* LidMesh;
+
+	UFUNCTION()
+	void UpdateLidPosition();
 
 };

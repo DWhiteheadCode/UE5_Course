@@ -23,23 +23,32 @@ ACItemChest::ACItemChest()
 	bReplicates = true;
 }
 
-void ACItemChest::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+void ACItemChest::OnActorLoaded_Implementation()
 {
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	DOREPLIFETIME(ACItemChest, bLidOpened);
+	UpdateLidPosition();
 }
-
 
 void ACItemChest::Interact_Implementation(APawn* InstigatorPawn)
 {
 	bLidOpened = !bLidOpened;
 
-	OnRep_LidMoved();
+	UpdateLidPosition();
 }
 
 void ACItemChest::OnRep_LidMoved()
 {
+	UpdateLidPosition();
+}
+
+void ACItemChest::UpdateLidPosition()
+{
 	float NewPitch = bLidOpened ? OpenPitch : 0.0f;
 	LidMesh->SetRelativeRotation(FRotator(NewPitch, 0, 0));
+}
+
+void ACItemChest::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ACItemChest, bLidOpened);
 }
