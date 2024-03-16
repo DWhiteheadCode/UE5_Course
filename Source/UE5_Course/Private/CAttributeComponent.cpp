@@ -160,9 +160,9 @@ bool UCAttributeComponent::SpendRage(AActor* InstigatorActor, float Amount)
 	return true;
 }
 
-void UCAttributeComponent::MulticastRageChanged_Implementation(AActor* InstigatorActor, float NewHealth, float ActualDelta)
+void UCAttributeComponent::MulticastRageChanged_Implementation(AActor* InstigatorActor, float NewRage, float ActualDelta)
 {
-	OnRageChanged.Broadcast(InstigatorActor, this, NewHealth, ActualDelta);
+	OnRageChanged.Broadcast(InstigatorActor, this, NewRage, ActualDelta);
 }
 
 // MISC ----------------------------------------------------------------------------
