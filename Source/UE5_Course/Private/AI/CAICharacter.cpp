@@ -67,13 +67,13 @@ void ACAICharacter::OnPawnSeen(APawn* Pawn)
     {
         SetTargetActor(Pawn);
 
-        MulticastPlayerSpotted();
+        MulticastPawnSeen();
     }
 
     //DrawDebugString(GetWorld(), GetActorLocation(), "PLAYER SPOTTED", nullptr, FColor::White, 4.0f, true);
 }
 
-void ACAICharacter::MulticastPlayerSpotted_Implementation()
+void ACAICharacter::MulticastPawnSeen_Implementation()
 {
     if (ensure(PlayerSpottedWidgetClass) && PlayerSpottedWidgetInstance == nullptr)
     {
