@@ -47,9 +47,9 @@ public:
 
 
 protected:
-	UPROPERTY(VisibleAnywhere, Replicated, Category = "Credits")
+	UPROPERTY(VisibleAnywhere, ReplicatedUsing="OnRep_CreditsChanged", Category = "Credits")
 	int32 Credits;
 
-	UFUNCTION(NetMulticast, Unreliable)
-	void MulticastCreditsChanged(int NewCredits, int Delta);
+	UFUNCTION()
+	void OnRep_CreditsChanged(int32 OldCredits);
 };

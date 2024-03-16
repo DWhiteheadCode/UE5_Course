@@ -31,8 +31,6 @@ void ACPlayerState::AddCredits(int32 Delta)
 	}
 
 	Credits += Delta;
-
-	MulticastCreditsChanged(Credits, Delta);
 }
 
 bool ACPlayerState::SpendCredits(int32 Amount)
@@ -53,16 +51,15 @@ bool ACPlayerState::SpendCredits(int32 Amount)
 	}
 
 	Credits -= Amount;
-	
-	MulticastCreditsChanged(Credits, -Amount);
 
 	return true;
 }
 
-void ACPlayerState::MulticastCreditsChanged_Implementation(int NewCredits, int Delta)
+void ACPlayerState::OnRep_CreditsChanged(int32 OldCredits)
 {
-	OnCreditsChanged.Broadcast(this, NewCredits, Delta);
+	OnCreditsChanged.Broadcast(this, Credits, Credits - OldCredits);
 }
+
 
 void ACPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
