@@ -35,28 +35,25 @@ void ACBasePickup::Interact_Implementation(APawn* InstigatorPawn)
 void ACBasePickup::StartCooldown()
 {
 	bIsOnCooldown = true;
-	OnRep_CooldownStateChanged();
+	UpdatePowerupState();
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle_PickupCooldown, this, &ACBasePickup::OnCooldownEnd, CooldownTime, false);
 }
 
 void ACBasePickup::OnCooldownEnd()
 {	
 	bIsOnCooldown = false;
-	OnRep_CooldownStateChanged();
+	UpdatePowerupState();
 }
 
 void ACBasePickup::OnRep_CooldownStateChanged()
 {
-	if (bIsOnCooldown) // Start Cooldown
-	{
-		MeshComp->SetVisibility(false, true);
-		GetWorldTimerManager().SetTimer(TimerHandle_PickupCooldown, this, &ACBasePickup::OnCooldownEnd, CooldownTime);
-		SetActorEnableCollision(false);
-	}
-	else // End Cooldown
-	{
-		MeshComp->SetVisibility(true, true);
-		SetActorEnableCollision(true);
-	}
+	UpdatePowerupState();
+}
+
+void ACBasePickup::UpdatePowerupState()
+{
+	SetActorEnableCollision(!bIsOnCooldown);
+	RootComponent->SetVisibility(!bIsOnCooldown, true); // "true" applies change to child components
 }
 
 void ACBasePickup::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

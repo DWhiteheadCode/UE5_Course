@@ -49,4 +49,7 @@ protected:
 	UFUNCTION()
 	void OnRep_CooldownStateChanged();
 
+	UFUNCTION()
+	void UpdatePowerupState();
+
 };
