@@ -12,9 +12,9 @@ void UCAction::StartAction_Implementation(AActor* Instigator)
 	UE_LOG(LogTemp, Log, TEXT("Started Action: %s"), *GetNameSafe(this));
 	//LogOnScreen(this, FString::Printf(TEXT("Started: %s"), *ActionName.ToString()), FColor::Green);
 
-
 	UCActionComponent* ActionComp = GetOwningComponent();
 	ActionComp->ActiveGameplayTags.AppendTags(GrantsTags);
+	ActionComp->OnActionStarted.Broadcast(ActionComp, this);
 
 	RepData.bIsRunning = true;
 	RepData.Instigator = Instigator;
@@ -29,6 +29,7 @@ void UCAction::StopAction_Implementation(AActor* Instigator)
 
 	UCActionComponent* ActionComp = GetOwningComponent();
 	ActionComp->ActiveGameplayTags.RemoveTags(GrantsTags);
+	ActionComp->OnActionStopped.Broadcast(ActionComp, this);
 
 	RepData.bIsRunning = false;
 	RepData.Instigator = Instigator;
