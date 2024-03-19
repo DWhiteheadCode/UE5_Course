@@ -4,6 +4,7 @@
 #include "CActionEffect.h"
 
 #include "CActionComponent.h"
+#include "GameFramework/GameStateBase.h"
 
 
 UCActionEffect::UCActionEffect()
@@ -55,8 +56,13 @@ void UCActionEffect::StopAction_Implementation(AActor* Instigator)
 
 float UCActionEffect::GetTimeRemaining() const
 {
-	float EndTime = TimeStarted + Duration;
-	return EndTime - GetWorld()->TimeSeconds;
+	if (AGameStateBase* GS = GetWorld()->GetGameState<AGameStateBase>())
+	{
+		float EndTime = TimeStarted + Duration;
+		return EndTime - GS->GetServerWorldTimeSeconds();
+	}
+
+	return Duration; // Default if game state hasn't replicated to this client yet
 }
 
 void UCActionEffect::ExecutePeriodicEffect_Implementation(AActor* Instigator)

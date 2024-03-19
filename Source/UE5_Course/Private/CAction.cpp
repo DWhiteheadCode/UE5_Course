@@ -16,7 +16,10 @@ void UCAction::StartAction_Implementation(AActor* Instigator)
 	ActionComp->ActiveGameplayTags.AppendTags(GrantsTags);
 	ActionComp->OnActionStarted.Broadcast(ActionComp, this);
 
-	TimeStarted = GetWorld()->TimeSeconds;
+	if (GetOwningComponent()->GetOwner()->HasAuthority())
+	{
+		TimeStarted = GetWorld()->TimeSeconds;
+	}		
 
 	RepData.bIsRunning = true;
 	RepData.Instigator = Instigator;
@@ -95,4 +98,5 @@ void UCAction::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetime
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(UCAction, RepData);
+	DOREPLIFETIME(UCAction, TimeStarted)
 }
