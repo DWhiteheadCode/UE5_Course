@@ -53,6 +53,12 @@ void UCActionEffect::StopAction_Implementation(AActor* Instigator)
 	}
 }
 
+float UCActionEffect::GetTimeRemaining() const
+{
+	float EndTime = TimeStarted + Duration;
+	return EndTime - GetWorld()->TimeSeconds;
+}
+
 void UCActionEffect::ExecutePeriodicEffect_Implementation(AActor* Instigator)
 {
 	// Effect in derived classes
