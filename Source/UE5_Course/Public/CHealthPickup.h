@@ -17,6 +17,8 @@ class UE5_COURSE_API ACHealthPickup : public ACBasePickup
 
 	void Interact_Implementation(APawn* InstigatorPawn) override;
 
+	FText GetInteractText_Implementation(APawn* InstigatorPawn) override;
+
 protected:
 	UPROPERTY(EditAnywhere, Category = "Health Pickup")
 	float AmountToHeal;

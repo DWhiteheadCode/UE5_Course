@@ -36,4 +36,17 @@ void ACHealthPickup::Interact_Implementation(APawn* InstigatorPawn)
 	}
 }
 
+FText ACHealthPickup::GetInteractText_Implementation(APawn* InstigatorPawn)
+{
+	UCAttributeComponent* AttributeComp = UCAttributeComponent::GetAttributeComponent(InstigatorPawn);
+	if (AttributeComp && AttributeComp->IsFullHealth())
+	{
+		return NSLOCTEXT( "InteractableActors", "HealthPickup_FullHealthWarning", "Already at full health.");
+	}
+
+	return FText::Format(
+		NSLOCTEXT("InteractableActors", "HealthPickup_InteractMessage", "Costs {0} Credits. Restores health to maximum."), 
+		CreditsCost);
+}
+
 

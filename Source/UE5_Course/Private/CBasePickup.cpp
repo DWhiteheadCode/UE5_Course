@@ -32,6 +32,11 @@ void ACBasePickup::Interact_Implementation(APawn* InstigatorPawn)
 	// Logic in child class(es)
 }
 
+FText ACBasePickup::GetInteractText_Implementation(APawn* InstigatorPawn)
+{
+	return FText::GetEmpty();
+}
+
 void ACBasePickup::StartCooldown()
 {
 	bIsOnCooldown = true;

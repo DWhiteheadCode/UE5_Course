@@ -17,10 +17,13 @@ class UE5_COURSE_API ACBasePickup : public AActor, public ICGameplayInterface
 {
 	GENERATED_BODY()
 	
-	virtual void Interact_Implementation(APawn* InstigatorPawn);
 
 public:	
 	ACBasePickup();
+
+	virtual void Interact_Implementation(APawn* InstigatorPawn);
+
+	FText GetInteractText_Implementation(APawn* InstigatorPawn);
 
 protected:
 	//COMPONENTS --------------------------------------------
