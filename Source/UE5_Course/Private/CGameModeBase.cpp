@@ -114,9 +114,18 @@ void ACGameModeBase::OnBotSpawnQueryFinished(UEnvQueryInstanceBlueprintWrapper* 
 
 	if (Locations.Num() > 0)
 	{		
-		GetWorld()->SpawnActor<AActor>(MinionClass, Locations[0], FRotator::ZeroRotator);
+		if (ensure(MinionTable))
+		{
+			TArray<FMinionInfoRow*> Rows;
+			MinionTable->GetAllRows("", Rows);
 
-		DrawDebugSphere(GetWorld(), Locations[0], 50.0f, 20, FColor::Blue, false, 60.0f);
+			// Get random entry. Does NOT factor in SpawnWeight
+			int32 RandomIndex = FMath::RandRange(0, Rows.Num() - 1);
+			FMinionInfoRow* SelectedRow = Rows[RandomIndex];
+
+			GetWorld()->SpawnActor<AActor>(SelectedRow->MinionClass, Locations[0], FRotator::ZeroRotator);
+			//DrawDebugSphere(GetWorld(), Locations[0], 50.0f, 20, FColor::Blue, false, 60.0f);
+		}		
 	}	
 }
 
