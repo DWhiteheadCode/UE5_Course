@@ -16,6 +16,7 @@ class UEnvQueryInstanceBlueprintWrapper;
 class UCurveFloat;
 class UCSaveGame;
 class UDataTable;
+class UCMinionData;
 
 USTRUCT(BlueprintType)
 struct FMinionInfoRow : public FTableRowBase
@@ -32,7 +33,10 @@ public:
 	}
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TSubclassOf<AActor> MinionClass;
+	UCMinionData* MinionData;
+
+	//UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	//TSubclassOf<AActor> MinionClass;
 
 	// Relative weight that this minion is spawned whenever a new minion is spawned
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)

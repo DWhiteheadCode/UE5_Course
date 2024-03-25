@@ -17,6 +17,8 @@
 #include "GameFramework/GameStateBase.h"
 #include "CGameplayInterface.h"
 #include "Serialization/ObjectAndNameAsStringProxyArchive.h"
+#include "CMinionData.h"
+#include "CActionComponent.h"
 
 static TAutoConsoleVariable<bool> CVarSpawnBots( TEXT("c.SpawnBots"), false, TEXT("Enable bot spawning via timer"), ECVF_Cheat);
 
@@ -123,8 +125,26 @@ void ACGameModeBase::OnBotSpawnQueryFinished(UEnvQueryInstanceBlueprintWrapper* 
 			int32 RandomIndex = FMath::RandRange(0, Rows.Num() - 1);
 			FMinionInfoRow* SelectedRow = Rows[RandomIndex];
 
-			GetWorld()->SpawnActor<AActor>(SelectedRow->MinionClass, Locations[0], FRotator::ZeroRotator);
-			//DrawDebugSphere(GetWorld(), Locations[0], 50.0f, 20, FColor::Blue, false, 60.0f);
+			AActor* NewBot = GetWorld()->SpawnActor<AActor>(SelectedRow->MinionData->MinionClass, Locations[0], FRotator::ZeroRotator);
+			
+			if (NewBot)
+			{
+				UCActionComponent* ActionComp = Cast<UCActionComponent>(NewBot->GetComponentByClass(UCActionComponent::StaticClass()));
+				if (ActionComp)
+				{
+					for (TSubclassOf<UCAction> ActionClass : SelectedRow->MinionData->Actions)
+					{
+						ActionComp->AddAction(ActionClass, NewBot);
+					}
+				}
+				// Actions should be added, but no ActionComp
+				else if ( ! SelectedRow->MinionData->Actions.IsEmpty())
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Spawned bot [%s], which had no ActionComponent, but MinionData had [%i] actions to add. Actions were not added."), 
+						*GetNameSafe(NewBot), 
+						SelectedRow->MinionData->Actions.Num())
+				}
+			}
 		}		
 	}	
 }
