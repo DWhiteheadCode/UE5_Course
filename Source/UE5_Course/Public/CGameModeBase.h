@@ -33,7 +33,7 @@ public:
 	}
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UCMinionData* MinionData;
+	FPrimaryAssetId MinionId;
 
 	//UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	//TSubclassOf<AActor> MinionClass;
@@ -97,6 +97,8 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 	UEnvQuery* SpawnBotQuery;
+
+	void OnMinionLoaded(FPrimaryAssetId LoadedId, FVector SpawnLocation);
 
 	//UPROPERTY(EditDefaultsOnly, Category = "AI")
 	//TSubclassOf<AActor> MinionClass;

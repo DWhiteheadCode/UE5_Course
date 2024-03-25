@@ -19,6 +19,7 @@
 #include "Serialization/ObjectAndNameAsStringProxyArchive.h"
 #include "CMinionData.h"
 #include "CActionComponent.h"
+#include "Engine/AssetManager.h"
 
 static TAutoConsoleVariable<bool> CVarSpawnBots( TEXT("c.SpawnBots"), false, TEXT("Enable bot spawning via timer"), ECVF_Cheat);
 
@@ -104,6 +105,8 @@ void ACGameModeBase::BotSpawnTimerElapsed()
 	}	
 }
 
+
+
 void ACGameModeBase::OnBotSpawnQueryFinished(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus)
 {
 	if (QueryStatus != EEnvQueryStatus::Success)
@@ -125,28 +128,50 @@ void ACGameModeBase::OnBotSpawnQueryFinished(UEnvQueryInstanceBlueprintWrapper* 
 			int32 RandomIndex = FMath::RandRange(0, Rows.Num() - 1);
 			FMinionInfoRow* SelectedRow = Rows[RandomIndex];
 
-			AActor* NewBot = GetWorld()->SpawnActor<AActor>(SelectedRow->MinionData->MinionClass, Locations[0], FRotator::ZeroRotator);
-			
+
+			UAssetManager* Manager = UAssetManager::GetIfValid();
+			if (Manager)
+			{
+				TArray<FName> Bundles;
+				FStreamableDelegate Delegate = FStreamableDelegate::CreateUObject(this, &ACGameModeBase::OnMinionLoaded, SelectedRow->MinionId, Locations[0]);
+				
+				Manager->LoadPrimaryAsset(SelectedRow->MinionId, Bundles, Delegate);
+			}
+		}		
+	}	
+}
+
+void ACGameModeBase::OnMinionLoaded(FPrimaryAssetId LoadedId, FVector SpawnLocation)
+{
+	UAssetManager* Manager = UAssetManager::GetIfValid();
+	if (Manager)
+	{
+		UCMinionData* MinionData = Cast<UCMinionData>(Manager->GetPrimaryAssetObject(LoadedId));
+
+		if (MinionData)
+		{
+			AActor* NewBot = GetWorld()->SpawnActor<AActor>(MinionData->MinionClass, SpawnLocation, FRotator::ZeroRotator);
+
 			if (NewBot)
 			{
 				UCActionComponent* ActionComp = Cast<UCActionComponent>(NewBot->GetComponentByClass(UCActionComponent::StaticClass()));
 				if (ActionComp)
 				{
-					for (TSubclassOf<UCAction> ActionClass : SelectedRow->MinionData->Actions)
+					for (TSubclassOf<UCAction> ActionClass : MinionData->Actions)
 					{
 						ActionComp->AddAction(ActionClass, NewBot);
 					}
 				}
 				// SelectedRow specified actions to add, but NewBot doesn't have an ActionComp
-				else if ( ! SelectedRow->MinionData->Actions.IsEmpty())
+				else if (!MinionData->Actions.IsEmpty())
 				{
-					UE_LOG(LogTemp, Warning, TEXT("Spawned bot [%s], which had no ActionComponent, but MinionData had [%i] actions to add. Actions were not added."), 
-						*GetNameSafe(NewBot), 
-						SelectedRow->MinionData->Actions.Num())
+					UE_LOG(LogTemp, Warning, TEXT("Spawned bot [%s], which had no ActionComponent, but MinionData had [%i] actions to add. Actions were not added."),
+						*GetNameSafe(NewBot),
+						MinionData->Actions.Num())
 				}
 			}
-		}		
-	}	
+		}
+	}
 }
 
 
