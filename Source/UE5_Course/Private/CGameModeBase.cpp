@@ -137,7 +137,7 @@ void ACGameModeBase::OnBotSpawnQueryFinished(UEnvQueryInstanceBlueprintWrapper* 
 						ActionComp->AddAction(ActionClass, NewBot);
 					}
 				}
-				// Actions should be added, but no ActionComp
+				// SelectedRow specified actions to add, but NewBot doesn't have an ActionComp
 				else if ( ! SelectedRow->MinionData->Actions.IsEmpty())
 				{
 					UE_LOG(LogTemp, Warning, TEXT("Spawned bot [%s], which had no ActionComponent, but MinionData had [%i] actions to add. Actions were not added."), 
