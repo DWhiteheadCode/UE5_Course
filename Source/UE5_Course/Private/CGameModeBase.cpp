@@ -20,8 +20,9 @@
 #include "CMinionData.h"
 #include "CActionComponent.h"
 #include "Engine/AssetManager.h"
+#include "../UE5_Course.h"
 
-static TAutoConsoleVariable<bool> CVarSpawnBots( TEXT("c.SpawnBots"), false, TEXT("Enable bot spawning via timer"), ECVF_Cheat);
+static TAutoConsoleVariable<bool> CVarSpawnBots( TEXT("c.SpawnBots"), true, TEXT("Enable bot spawning via timer"), ECVF_Cheat);
 
 ACGameModeBase::ACGameModeBase()
 {
@@ -92,7 +93,6 @@ void ACGameModeBase::BotSpawnTimerElapsed()
 		UE_LOG(LogTemp, Log, TEXT("Max number of bots are alive. Skipping bot spawn."))
 		return;
 	}
-
 
 	// Run EQS Query to check where the new bot should spawn
 	UEnvQueryInstanceBlueprintWrapper* QueryInstance = UEnvQueryManager::RunEQSQuery(this, SpawnBotQuery, this, EEnvQueryRunMode::RandomBest5Pct, nullptr);
