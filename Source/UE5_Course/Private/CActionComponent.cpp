@@ -8,6 +8,10 @@
 #include "Net/UnrealNetwork.h"
 #include "Engine/ActorChannel.h"
 
+
+DECLARE_CYCLE_STAT(TEXT("StartActionByName"), STAT_StartActionByName, STATGROUP_Course);
+
+
 UCActionComponent::UCActionComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
@@ -26,10 +30,6 @@ void UCActionComponent::BeginPlay()
 		}
 	}	
 }
-
-
-
-
 
 // TODO: Disable component tick()
 void UCActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -79,6 +79,8 @@ void UCActionComponent::AddAction(TSubclassOf<UCAction> ActionClass, AActor* Ins
 
 bool UCActionComponent::StartActionByName(AActor* Instigator, FName ActionName)
 {
+	SCOPE_CYCLE_COUNTER(STAT_StartActionByName);
+
 	for (UCAction* Action : Actions)
 	{
 		if (Action && Action->ActionName == ActionName)

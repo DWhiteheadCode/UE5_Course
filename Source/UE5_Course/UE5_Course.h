@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 
-
+DECLARE_STATS_GROUP(TEXT("UE5_Course_Game"), STATGROUP_Course, STATCAT_Advanced);
 
 static void LogOnScreen(UObject* WorldContext, FString Msg, FColor Color = FColor::White, float Duration = 5.0f)
 {
