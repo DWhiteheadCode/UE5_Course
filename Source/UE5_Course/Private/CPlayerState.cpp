@@ -31,6 +31,8 @@ void ACPlayerState::AddCredits(int32 Delta)
 	}
 
 	Credits += Delta;
+
+	OnCreditsChanged.Broadcast(this, Credits, Delta);
 }
 
 bool ACPlayerState::SpendCredits(int32 Amount)
@@ -51,6 +53,8 @@ bool ACPlayerState::SpendCredits(int32 Amount)
 	}
 
 	Credits -= Amount;
+
+	OnCreditsChanged.Broadcast(this, Credits, -Amount);
 
 	return true;
 }
