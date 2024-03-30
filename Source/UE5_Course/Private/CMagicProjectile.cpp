@@ -16,6 +16,8 @@
 ACMagicProjectile::ACMagicProjectile()
 {
 	DamageAmount = 20.0f;
+
+	InitialLifeSpan = 10.0f;
 }
 
 void ACMagicProjectile::PostInitializeComponents()
