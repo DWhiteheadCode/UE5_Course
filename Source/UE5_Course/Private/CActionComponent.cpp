@@ -31,7 +31,7 @@ void UCActionComponent::BeginPlay()
 
 
 
-
+// TODO: Disable component tick()
 void UCActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
@@ -39,16 +39,16 @@ void UCActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 	//FString DebugMessage = GetNameSafe(GetOwner()) + " : " + ActiveGameplayTags.ToStringSimple();
 	//GEngine->AddOnScreenDebugMessage( -1, 0.0F, FColor::White, DebugMessage );
 
-	for (UCAction* Action : Actions)
-	{
-		FColor TextColor = Action->IsRunning() ? FColor::Blue : FColor::White;
+	//for (UCAction* Action : Actions)
+	//{
+		//FColor TextColor = Action->IsRunning() ? FColor::Blue : FColor::White;
 
-		FString ActionMsg = FString::Printf( TEXT("[%s] Action: %s"),
-			*GetNameSafe(GetOwner()),
-			*GetNameSafe(Action));
+		//FString ActionMsg = FString::Printf( TEXT("[%s] Action: %s"),
+			//*GetNameSafe(GetOwner()),
+			//*GetNameSafe(Action));
 
-		LogOnScreen(this, ActionMsg, TextColor, 0.0f);
-	}
+		//LogOnScreen(this, ActionMsg, TextColor, 0.0f);
+	//}
 
 }
 
