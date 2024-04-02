@@ -36,6 +36,17 @@ ACGameModeBase::ACGameModeBase()
 	SlotName = "SaveGame01";
 }
 
+void ACGameModeBase::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)
+{
+	Super::InitGame(MapName, Options, ErrorMessage);
+
+	FString SelectedSaveSlot = UGameplayStatics::ParseOption(Options, "SaveGame");
+	if (SelectedSaveSlot.Len() > 0)
+	{
+		SlotName = SelectedSaveSlot;
+	}
+}
+
 void ACGameModeBase::HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer)
 {
 	if (ACPlayerState* PlayerState = NewPlayer->GetPlayerState<ACPlayerState>())

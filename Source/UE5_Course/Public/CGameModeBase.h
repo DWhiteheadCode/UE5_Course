@@ -59,6 +59,8 @@ class UE5_COURSE_API ACGameModeBase : public AGameModeBase
 public:
 	ACGameModeBase();
 
+	virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
+
 	virtual void StartPlay() override;
 
 	UFUNCTION(Exec)
