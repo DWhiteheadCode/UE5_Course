@@ -58,6 +58,8 @@ protected:
 
 	virtual void BeginPlay() override;
 
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
 	UFUNCTION(Server, Reliable)
 	void ServerStartActionByName(AActor* Instigator, FName ActionName);
 

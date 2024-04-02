@@ -186,6 +186,22 @@ bool UCActionComponent::ReplicateSubobjects(UActorChannel* Channel, FOutBunch* B
 	return WroteSomething;
 }
 
+void UCActionComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	// ActionsCopy is needed as Action->StopAction() removes Action from the Actions array
+	// This can't be done while iterating through that array
+	TArray<UCAction*> ActionsCopy = Actions;
+	for (UCAction* Action : ActionsCopy)
+	{
+		if (Action->IsRunning())
+		{
+			Action->StopAction(GetOwner());
+		}
+	}
+
+	Super::EndPlay(EndPlayReason);
+}
+
 void UCActionComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
