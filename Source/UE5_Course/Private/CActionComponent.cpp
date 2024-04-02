@@ -100,6 +100,8 @@ bool UCActionComponent::StartActionByName(AActor* Instigator, FName ActionName)
 				ServerStartActionByName(Instigator, ActionName);
 			}
 
+			TRACE_BOOKMARK(TEXT("StartAction::%s"), *GetNameSafe(Action));
+
 			Action->StartAction(Instigator); // Start this action locally
 			return true;
 		}
