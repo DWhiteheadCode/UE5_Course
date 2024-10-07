@@ -49,7 +49,7 @@ void ACBaseProjectile::OnActorHit(UPrimitiveComponent* HitComponent, AActor* Oth
 
 void ACBaseProjectile::Detonate()
 {
-	if (ensure(!IsPendingKill()))
+	if (ensure(IsValid(this)))
 	{
 		UGameplayStatics::SpawnEmitterAtLocation(this, ImpactVFX, GetActorLocation(), GetActorRotation());
 		UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), GetActorRotation());
